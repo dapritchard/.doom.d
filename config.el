@@ -90,9 +90,9 @@
   :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
-(use-package undo-tree
+(use-package! undo-tree
   :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode 1))
 
 
 ;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
