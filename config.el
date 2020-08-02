@@ -94,6 +94,35 @@
   :config
   (global-undo-tree-mode))
 
+
+;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
+;; package, which are seemingly triggered by motions and can be jumped around
+;; using "C-o" and "C-i". You can manually add a position to the jump list by
+;; using (the non-interactive function) `evil-set-jump'.
+
+;; manage jumps "per-buffer", rather than "per-window."
+(setq better-jumper-context 'buffer)
+
+;; by default bound to `company/complete'
+(general-def 'insert "C-SPC")
+
+;; by default bound to `evil-scroll-up'
+(general-def 'motion "C-u")
+
+;; So that we can press e.g. C-u C-SPC C-SPC C-SPC to pop the mark three times.
+(setq set-mark-command-repeat-pop t)
+
+
+(use-package! smartparens
+  :config
+  (add-hook 'prog-mode-hook #'turn-on-smartparens-strict-mode)
+  (add-hook 'comint-mode-hook #'turn-on-smartparens-mode)
+  (add-hook 'text-mode-hook #'turn-on-smartparens-mode))
+
+(use-package evil-smartparens
+  :config
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+
 ;; TODO move this into a smartparens block.  See https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el
 (general-def
   "s-f" 'sp-down-sexp
