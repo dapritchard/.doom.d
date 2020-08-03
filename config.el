@@ -92,7 +92,7 @@
 
 (use-package! undo-tree
   :config
-  (global-undo-tree-mode 1))
+  (global-undo-tree-mode))
 
 
 ;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
@@ -122,6 +122,16 @@
 (use-package evil-smartparens
   :config
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+
+;; the "Smartparens config" section of
+;; ~/.emacs.d/modules/config/default/config.el has a section that calls
+;; `sp-pair' for the (), [], and {} pairs with an argument to `:unless' that has
+;; the effect of preventing the closing part of a pair from being inserted
+;; before a word or another one of the same opening pair. The following commands
+;; undoes those changes.
+(sp-pair "(" nil :unless nil)
+(sp-pair "[" nil :unless nil)
+(sp-pair "{" nil :unless nil)
 
 ;; TODO move this into a smartparens block.  See https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el
 (general-def
