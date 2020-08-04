@@ -57,14 +57,14 @@
 (setq mac-option-modifier 'super)
 
 (general-def
-  "C-9" 'previous-buffer
-  "C-0" 'next-buffer
-  "M-[" 'scroll-down-line
-  "M-]" 'scroll-up-line)
+  "C-9" #'previous-buffer
+  "C-0" #'next-buffer
+  "M-[" #'scroll-down-line
+  "M-]" #'scroll-up-line)
 
-(general-def 'normal
-  "9" 'evil-digit-argument-or-evil-beginning-of-line
-  "0" 'evil-end-of-line)
+(general-def '(normal motion)
+  "9" #'evil-digit-argument-or-evil-beginning-of-line
+  "0" #'evil-end-of-line)
 
 (use-package! evil
   :custom
