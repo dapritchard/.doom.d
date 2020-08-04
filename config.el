@@ -66,6 +66,13 @@
   "9" #'evil-digit-argument-or-evil-beginning-of-line
   "0" #'evil-end-of-line)
 
+;; by default "C-j" is bound to an alias for newline in insert mode and
+;; `electric-newline-and-maybe-indent' in the global map, but I like to use this
+;; keybinding in some minor modes and fall back to the global definition
+;; otherwise
+(general-def 'insert
+  "C-j" nil)
+
 (use-package! evil
   :custom
   (evil-disable-insert-state-bindings t))
@@ -75,6 +82,9 @@
   (avy-all-windows t)
   :general
   ("M-g M-g" 'avy-goto-line))
+
+(general-def
+  "C-;" #'avy-goto-char-2)
 
 (use-package! ace-window
   :config
@@ -144,8 +154,8 @@
   "C-M-t" 'sp-transpose-sexp
   "s-W" 'sp-kill-sexp
   "s-w" 'sp-copy-sexp
-  "M-d" 'sp-unwrap-sexp
-  "M-D" 'sp-backward-unwrap-sexp
+  "s-d" 'sp-unwrap-sexp
+  "s-D" 'sp-backward-unwrap-sexp
   "s-g" 'sp-forward-slurp-sexp
   "s-G" 'sp-backward-slurp-sexp
   "s-b" 'sp-forward-barf-sexp
@@ -154,3 +164,23 @@
   "s-s" 'sp-split-sexp
   "s-S" 'sp-join-sexp
   "s-r" 'sp-rewrap-sexp)
+
+;; ESS -------------------------------------------------------------------------
+(setq ess-style 'RStudio                              ; set the indentation style to mimic RStudio's
+      ess-indent-with-fancy-comments nil              ; always indent comments to current code depth
+      ess-plain-first-buffername nil                  ; name the first R process R:1
+      ess-auto-width 'window                          ; synchronize R's "width" option to the window width
+      ess-roxy-str "#'"                               ; so Roxygen comments are #' not ##'
+      inferior-R-args "--no-restore-data --no-save")  ; command line params when starting R
+
+(general-def 'ess-mode-map
+  ";" #'ess-insert-assign
+  "C-j" #'ess-eval-region-or-line-visibly-and-step)
+
+(general-def 'ess-r-mode-map
+  "C-S-m" (lambda () (interactive) (insert " %>% "))
+  "C-c C-h" #'dp-ess-eval-word)
+
+(general-def 'inferior-ess-mode-map
+  ";" 'ess-insert-assign
+  "C-S-m" (lambda () (interactive) (insert " %>% ")))
