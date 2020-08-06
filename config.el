@@ -55,6 +55,10 @@
 
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'super)
+(use-package exec-path-from-shell
+  :config
+  (when (display-graphic-p)
+    (exec-path-from-shell-initialize)))
 
 (general-def
   "C-9" #'previous-buffer
@@ -104,6 +108,12 @@
   :config
   (global-undo-tree-mode))
 
+;; ;; highlight both files and directories in treemacs based on their git status
+;; (setq +treemacs-git-mode 'deferred)
+;; (setq doom-themes-treemacs-theme "doom-atom")
+;; (setq doom-themes-treemacs-theme "doom-colors")
+(after! treemacs
+  (setq doom-themes-treemacs-theme "doom-colors"))
 
 ;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
 ;; package, which are seemingly triggered by motions and can be jumped around
@@ -168,7 +178,7 @@
 ;; ESS -------------------------------------------------------------------------
 (setq ess-style 'RStudio                              ; set the indentation style to mimic RStudio's
       ess-indent-with-fancy-comments nil              ; always indent comments to current code depth
-      ess-plain-first-buffername nil                  ; name the first R process R:1
+      ess-plain-first-buffername nil                  ; name the first R process R:1 for consistency
       ess-auto-width 'window                          ; synchronize R's "width" option to the window width
       ess-roxy-str "#'"                               ; so Roxygen comments are #' not ##'
       inferior-R-args "--no-restore-data --no-save")  ; command line params when starting R
