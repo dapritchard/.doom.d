@@ -115,6 +115,12 @@
 (after! treemacs
   (setq doom-themes-treemacs-theme "doom-colors"))
 
+(general-def
+  "M-{" #'er/expand-region
+  "M-}" #'er/contract-region
+  "M-O" #'er/mark-defun
+  "M-P" #'er/mark-paragraph)
+
 ;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
 ;; package, which are seemingly triggered by motions and can be jumped around
 ;; using "C-o" and "C-i". You can manually add a position to the jump list by
