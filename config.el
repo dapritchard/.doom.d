@@ -25,7 +25,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-spacegrey)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -60,6 +60,9 @@
   (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
 
+
+;; general keybindings --------------------------------------------------------
+
 (general-def
   "C-9" #'previous-buffer
   "C-0" #'next-buffer
@@ -69,6 +72,59 @@
 (general-def '(normal motion)
   "9" #'evil-digit-argument-or-evil-beginning-of-line
   "0" #'evil-end-of-line)
+
+
+;; Ibuffer --------------------------------------------------------------------
+
+(require 'ibuffer)
+(require 'ibuf-ext)
+
+;; inform Ibuffer to use the saved filter groups
+(add-hook 'ibuffer-mode-hook
+          (lambda () (ibuffer-switch-to-saved-filter-groups "default")))
+
+;; specify groupings for Ibuffer entries.  See https://www.emacswiki.org/emacs/IbufferMode for
+;; more details.
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("R" (mode . ess-r-mode))
+               ("Python" (mode . python-mode))
+               ("C/C++" (or (mode . c-mode)
+                            (mode . c++-mode)))
+               ("LaTeX" (or (mode . latex-mode)
+                            (mode . bibtex-mode)))
+               ("shell" (mode . sh-mode))
+               ("Lisp" (or (mode . lisp-mode)
+                           (mode . scheme-mode)))
+               ("emacs" (or (mode . lisp-interaction-mode)
+                            (mode . emacs-lisp-mode)))
+               ("dired" (mode . dired-mode))
+               ("processes" (or (mode . inferior-ess-r-mode)
+                                (mode . inferior-ess-mode)
+                                (mode . inferior-python-mode)
+                                (mode . term-mode)
+                                (mode . shell-mode)
+                                (mode . slime-repl-mode)
+                                (mode . geiser-repl-mode)))
+               ("Org" (mode . org-mode))
+               ("documentation" (or (mode . Info-mode)
+                                    (mode . helpful-mode)
+                                    (mode . Man-mode)
+                                    (mode . ess-r-help-mode)))))))
+
+;; change the width of the first column.  See
+;; https://emacs.stackexchange.com/a/623/15552
+(setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 40 40 :left :elide) ; change: the two 40 values were originally 18's
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " " filename-and-process)
+        (mark " "
+              (name 16 -1)
+              " " filename)))
 
 ;; by default "C-j" is bound to an alias for newline in insert mode and
 ;; `electric-newline-and-maybe-indent' in the global map, but I like to use this
@@ -137,6 +193,11 @@
 
 ;; So that we can press e.g. C-u C-SPC C-SPC C-SPC to pop the mark three times.
 (setq set-mark-command-repeat-pop t)
+
+
+;; use Ibuffer for Buffer List.  This is also 'SPC b i'.
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 
 
 (use-package! smartparens
