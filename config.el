@@ -133,6 +133,10 @@
               (name 16 -1)
               " " filename)))
 
+;; ignore buffers created by polymode
+(add-to-list 'ibuffer-never-show-predicates "\\*help\\[R\\]\\(.*\\)\\[head-tail\\]")
+(add-to-list 'ibuffer-never-show-predicates "\\*help\\[R\\]\\(.*\\)\\*\\[R\\]")
+
 
 (use-package! evil
   :custom
