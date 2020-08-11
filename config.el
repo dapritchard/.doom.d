@@ -255,6 +255,10 @@
       ess-roxy-str "#'"                               ; so Roxygen comments are #' not ##'
       inferior-R-args "--no-restore-data --no-save")  ; command line params when starting R
 
+
+;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
+(add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
+
 (general-def 'ess-mode-map
   ";" #'ess-insert-assign
   "C-j" #'ess-eval-region-or-line-visibly-and-step)
