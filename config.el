@@ -73,6 +73,13 @@
   "9" #'evil-digit-argument-or-evil-beginning-of-line
   "0" #'evil-end-of-line)
 
+;; by default "C-j" is bound to an alias for newline in insert mode, and is
+;; bound `electric-newline-and-maybe-indent' in the global map, but I like to
+;; use this keybinding in some minor modes and fall back to the global
+;; definition otherwise
+(general-def 'insert
+  "C-j" nil)
+
 
 ;; Ibuffer --------------------------------------------------------------------
 
@@ -126,12 +133,6 @@
               (name 16 -1)
               " " filename)))
 
-;; by default "C-j" is bound to an alias for newline in insert mode and
-;; `electric-newline-and-maybe-indent' in the global map, but I like to use this
-;; keybinding in some minor modes and fall back to the global definition
-;; otherwise
-(general-def 'insert
-  "C-j" nil)
 
 (use-package! evil
   :custom
