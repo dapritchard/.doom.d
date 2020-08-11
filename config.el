@@ -250,29 +250,32 @@
   "s-S" 'sp-join-sexp
   "s-r" 'sp-rewrap-sexp)
 
+
 ;; ESS -------------------------------------------------------------------------
-(setq ess-style 'RStudio                              ; set the indentation style to mimic RStudio's
-      ess-indent-with-fancy-comments nil              ; always indent comments to current code depth
-      ess-plain-first-buffername nil                  ; name the first R process R:1 for consistency
-      ess-auto-width 'window                          ; synchronize R's "width" option to the window width
-      ess-roxy-str "#'"                               ; so Roxygen comments are #' not ##'
-      inferior-R-args "--no-restore-data --no-save")  ; command line params when starting R
 
+(after! ess
 
-;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
-(add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
+  (setq ess-style 'RStudio                               ; set the indentation style to mimic RStudio's
+        ess-indent-with-fancy-comments nil               ; always indent comments to current code depth
+        ess-plain-first-buffername nil                   ; name the first R process R:1 for consistency
+        ess-auto-width 'window                           ; synchronize R's "width" option to the window width
+        ess-roxy-str "#'"                                ; so Roxygen comments are #' not ##'
+        inferior-R-args "--no-restore-data --no-save")   ; command line parameters when starting R
 
-(general-def 'ess-mode-map
-  ";" #'ess-insert-assign
-  "C-j" #'ess-eval-region-or-line-visibly-and-step)
+  ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
+  (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
 
-(general-def 'ess-r-mode-map
-  "C-S-m" (lambda () (interactive) (insert " %>% "))
-  "C-c C-h" #'dp-ess-eval-word)
+  (general-def 'ess-mode-map
+    ";" #'ess-insert-assign
+    "C-j" #'ess-eval-region-or-line-visibly-and-step)
 
-(general-def 'inferior-ess-mode-map
-  ";" 'ess-insert-assign
-  "C-S-m" (lambda () (interactive) (insert " %>% ")))
+  (general-def 'ess-r-mode-map
+    "C-S-m" (lambda () (interactive) (insert " %>% "))
+    "C-c C-h" #'dp-ess-eval-word)
+
+  (general-def 'inferior-ess-mode-map
+    ";" 'ess-insert-assign
+    "C-S-m" (lambda () (interactive) (insert " %>% "))))
 
 
 ;; nicer `open-line' ----------------------------------------------------------
@@ -283,5 +286,5 @@
   (save-excursion
     (newline-and-indent)))
 
-;; replace `open-line'
-(global-set-key [remap open-line] #'open-line-and-indent)
+;; ;; replace `open-line'
+;; (global-set-key [remap open-line] #'open-line-and-indent)
