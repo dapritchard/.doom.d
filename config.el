@@ -148,6 +148,9 @@
   :general
   ("M-g M-g" 'avy-goto-line))
 
+;; HACK: iedit creates an annoying buffer at load time if the C-; keybinding is
+;; already taken, so load it first
+(require 'iedit)
 (general-def
   "C-;" #'avy-goto-char-2)
 
