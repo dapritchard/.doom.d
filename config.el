@@ -273,3 +273,15 @@
 (general-def 'inferior-ess-mode-map
   ";" 'ess-insert-assign
   "C-S-m" (lambda () (interactive) (insert " %>% ")))
+
+
+;; nicer `open-line' ----------------------------------------------------------
+
+(defun open-line-and-indent ()
+  "Like `open-line', but with proper indentation."
+  (interactive)
+  (save-excursion
+    (newline-and-indent)))
+
+;; replace `open-line'
+(global-set-key [remap open-line] #'open-line-and-indent)
