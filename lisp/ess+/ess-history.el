@@ -28,18 +28,19 @@ This function is intended to be used as advice for
     (ess-history--add-to-input-history sbuffer text)))
 
 
-(defun ess-history--add-to-input-history (comint-buffer string)
+(defun ess-history--add-to-input-history (comint-buffer str)
   "Add an entry to a comint buffer's history.
 Take a buffer associated with a comint buffer COMINT-BUFFER and a
 string STRING as inputs, and add a trimmed and propertized
 version of STRING to the buffer's history ring."
   (let*
-      ((trimmed-string (ess-history--strip-lead-trail-newline string))
-       (trimmed-propertized-string (propertize trimmed-string
-                                               'font-lock-face
-                                               'comint-highlight-input)))
+      ((extracted-str (ess-history--extract-from-essr str))
+       (trimmed-str (ess-history--strip-lead-trail-newline extracted-str))
+       (propertized-str (propertize trimmed-str
+                                    'font-lock-face
+                                    'comint-highlight-input)))
     (with-current-buffer comint-buffer
-      (comint-add-to-input-history trimmed-propertized-string))))
+      (comint-add-to-input-history propertized-str))))
 
 
 (defun ess-history--strip-lead-trail-newline (str)
@@ -50,5 +51,12 @@ version of STRING to the buffer's history ring."
    (replace-regexp-in-string "\\`\n*" "")
    (replace-regexp-in-string "\n*\\'" "")))
 
+
+(defun ess-history--extract-from-essr (str)
+  (if (string-match-p "\\`\\.ess\\." str)
+      (thread-last str
+        (replace-regexp-in-string "\\`[^\"]*\"" "")
+        (replace-regexp-in-string "\"[^\"]*\\'" ""))
+    str))
 
 (provide 'ess-history)
