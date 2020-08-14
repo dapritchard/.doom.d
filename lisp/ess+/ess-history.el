@@ -63,10 +63,10 @@ like .ess.eval(\"expr\", ...). This command attempts to extract
 that expression, if necessary."
   (if (string-match-p "\\`\\.ess\\." str)
       (thread-last str
-        (replace-regexp-in-string "\\`[^\"]*\"" "")  ; everything up to the first "
-        (replace-regexp-in-string "\"[^\"]*\\'" "")  ; everything after the last "
-        (replace-regexp-in-string "\\\"" "\"")       ; escaped " become unescaped
-        (replace-regexp-in-string "\\\\" "\\"))      ; escaped \ become unescaped
+        (replace-regexp-in-string "\\`[^\"]*\"" "")  ; everything up to the first " (inclusive)
+        (replace-regexp-in-string "\"[^\"]*\\'" "")  ; everything after the last " (inclusive)
+        (replace-regexp-in-string "\\\"" "\"")       ; escaped " becomes unescaped
+        (replace-regexp-in-string "\\\\" "\\"))      ; escaped \ becomes unescaped
     str))
 
 
