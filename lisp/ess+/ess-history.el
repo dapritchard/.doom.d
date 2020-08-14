@@ -55,8 +55,11 @@ version of STRING to the buffer's history ring."
 (defun ess-history--extract-from-essr (str)
   (if (string-match-p "\\`\\.ess\\." str)
       (thread-last str
-        (replace-regexp-in-string "\\`[^\"]*\"" "")
-        (replace-regexp-in-string "\"[^\"]*\\'" ""))
+        (replace-regexp-in-string "\\`[^\"]*\"" "")  ; everything up to the first "
+        (replace-regexp-in-string "\"[^\"]*\\'" "")  ; everything after the last "
+        (replace-regexp-in-string "\\\"" "\"")       ; escaped " become unescaped
+        (replace-regexp-in-string "\\\\" "\\"))      ; escaped \ become unescaped
     str))
+
 
 (provide 'ess-history)
