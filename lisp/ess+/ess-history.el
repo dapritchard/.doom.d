@@ -8,16 +8,47 @@
 (advice-add #'ess-send-string :after #'ess-history-for-send-string)
 
 (defun ess-history-for-send-string (process string &optional visibly _message _type)
-  "Add a string to the buffer history associated with a process.
+  "Add an entry to the comint history associated with a process.
 This function is intended to be used as advice for
 `ess-send-string'. When VISIBLY is t then the work is handed off
 to `ess-eval-linewise' so we will allow other handlers to deal
 with that case and this function becomes a no-op."
   (unless (eq visibly t)
-    (with-current-buffer (process-buffer process)
-      (comint-add-to-input-history (propertize (dp-strip-lead-trail-newline string)
+    (ess-history--add-to-input-history (process-buffer process) string)))
+
+
+(defun ess-history-for-eval-linewise
+    (text &optional _invisibly _eob _even-empty _wait-last-prompt _sleep-sec _wait-sec)
+  "Add an entry to the comint history associated with a process.
+This function is intended to be used as advice for
+`ess-eval-linewise'."
+  (let*
+      ((sprocess (ess-get-process ess-current-process-name))
+       (sbuffer (process-buffer sprocess)))
+    (ess-history--add-to-input-history sbuffer text)))
+
+
+(defun ess-history--add-to-input-history (comint-buffer string)
+  "Add an entry to a comint buffer's history.
+Take a buffer associated with a comint buffer COMINT-BUFFER and a
+string STRING as inputs, and add a trimmed and propertized
+version of STRING to the buffer's history ring."
+  (let*
+      ((trimmed-string (ess-history--strip-lead-trail-newline string))
+       (trimmed-propertized-string (propertize trimmed-string
                                                'font-lock-face
-                                               'comint-highlight-input)))))
+                                               'comint-highlight-input)))
+    (with-current-buffer comint-buffer
+      (comint-add-to-input-history trimmed-propertized-string))))
+
+
+(defun ess-history--strip-lead-trail-newline (str)
+  "Strip any leading and trailing newlines from a string."
+  (unless (stringp str)
+    (error "The input to STR must be a string."))
+  (thread-last str
+   (replace-regexp-in-string "\\`\n*" "")
+   (replace-regexp-in-string "\n*\\'" "")))
 
 
 (provide 'ess-history)
