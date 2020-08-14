@@ -14,6 +14,7 @@ This function is intended to be used as advice for
 to `ess-eval-linewise' so we will allow other handlers to deal
 with that case and this function becomes a no-op."
   (unless (eq visibly t)
+    (message "%s" string)
     (ess-history--add-to-input-history (process-buffer process) string)))
 
 
@@ -22,6 +23,7 @@ with that case and this function becomes a no-op."
   "Add an entry to the comint history associated with a process.
 This function is intended to be used as advice for
 `ess-eval-linewise'."
+  (message "%s" text)
   (let*
       ((sprocess (ess-get-process ess-current-process-name))
        (sbuffer (process-buffer sprocess)))
@@ -40,7 +42,10 @@ version of STRING to the buffer's history ring."
                                     'font-lock-face
                                     'comint-highlight-input)))
     (with-current-buffer comint-buffer
-      (comint-add-to-input-history propertized-str))))
+      ;; when expressions are entered directly into the R prompt then they are
+      ;; already added to the history, so we don't want to duplicate these
+      (unless (string= extracted-str (ring-ref comint-input-ring 0))
+        (comint-add-to-input-history propertized-str)))))
 
 
 (defun ess-history--strip-lead-trail-newline (str)
@@ -53,6 +58,10 @@ version of STRING to the buffer's history ring."
 
 
 (defun ess-history--extract-from-essr (str)
+  "Extract an expression wrapped in an ESSR function call.
+Some ESS commands send R expressions to the interpreter in a form
+like .ess.eval(\"expr\", ...). This command attempts to extract
+that expression, if necessary."
   (if (string-match-p "\\`\\.ess\\." str)
       (thread-last str
         (replace-regexp-in-string "\\`[^\"]*\"" "")  ; everything up to the first "
