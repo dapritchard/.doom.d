@@ -2,6 +2,7 @@
 
 (require 'comint)
 
+
 ;; these are the two functions (that I am aware of) which ultimately send inputs
 ;; to the inferior process
 (advice-add #'ess-eval-linewise :after #'ess-history-for-eval-linewise)
@@ -36,15 +37,16 @@ version of STRING to the buffer's history ring."
   (let*
       ((extracted-str (ess-history--extract-from-essr str))
        (trimmed-str (ess-history--strip-lead-trail-newline extracted-str))
-       (propertized-str (propertize trimmed-str
-                                    'font-lock-face
-                                    'comint-highlight-input)))
+       (propertized-str (ess-history-add-r-text-properties trimmed-str)))
     (with-current-buffer comint-buffer
       ;; when expressions are entered directly into the R prompt then they are
-      ;; already added to the history, so we don't want to duplicate these
-      (unless (or (not comint-input-ring)
-                  (string= extracted-str (ring-ref comint-input-ring 0)))
-        (comint-add-to-input-history propertized-str)))))
+      ;; already added to the history, but we do more work to propertize the
+      ;; text so let's use our version (and fortunately we are happy to delete
+      ;; consecutive duplicates in the other situation that this can arise)
+      (when (and comint-input-ring
+                 (string= extracted-str (ring-ref comint-input-ring 0)))
+        (ring-remove comint-input-ring 0))
+      (comint-add-to-input-history propertized-str))))
 
 
 (defun ess-history--strip-lead-trail-newline (str)
@@ -68,6 +70,14 @@ that expression, if necessary."
         (replace-regexp-in-string "\\\"" "\"")       ; escaped " becomes unescaped
         (replace-regexp-in-string "\\\\" "\\"))      ; escaped \ becomes unescaped
     str))
+
+
+(defun ess-history-add-r-text-properties (str)
+  "Add ess-r-mode text properties to STR."
+  (with-temp-buffer
+    (ess-r-mode)
+    (insert str)
+    (buffer-string)))
 
 
 (provide 'ess-history)
