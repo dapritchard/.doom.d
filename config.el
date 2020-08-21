@@ -81,6 +81,25 @@
   "C-j" nil)
 
 
+;; dired ----------------------------------------------------------------------
+
+;; ;; `dired-find-file-other-window' is bound to "g-O", but I can never remember it
+;; (general-def 'normal dired-mode-map
+;;   "o" #'dired-find-file-other-window)
+
+
+;; info -----------------------------------------------------------------------
+
+;; `Info-scroll-down' is DEL in normal state, but `Info-state-up' doesn't have a
+;; keybinding, so let's make it next to DEL, noting that "=" is unused.
+;; Additionally, I swap the keybindings for the two, since I'm most often
+;; reaching for `Info-scroll-down'.
+(general-def 'normal 'Info-mode-map
+  "=" #'Info-scroll-down
+  "DEL" #'Info-scroll-up)
+
+
+
 ;; Ibuffer --------------------------------------------------------------------
 
 (require 'ibuffer)
