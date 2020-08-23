@@ -81,6 +81,16 @@
   "C-j" nil)
 
 
+;; window movement ------------------------------------------------------------
+
+(general-def
+  "s-h" #'evil-window-left
+  "s-j" #'evil-window-down
+  "s-k" #'evil-window-up
+  "s-l" #'evil-window-right
+)
+
+
 ;; dired ----------------------------------------------------------------------
 
 ;; ;; `dired-find-file-other-window' is bound to "g-O", but I can never remember it
