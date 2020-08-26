@@ -317,3 +317,20 @@
 
 ;; ;; replace `open-line'
 ;; (global-set-key [remap open-line] #'open-line-and-indent)
+
+
+;; uncollected functions ------------------------------------------------------
+
+(defun whitespace-cleanup-force ()
+  "Like `whitespace-cleanup', but always cleans everything.
+The `whitespace-cleanup' function only cleans the types of
+whitespace that are included in `whitespace-style'. However, this
+variable also controls what you see in `whitespace-mode', and
+sometimes you don't want to visualize every type of whitespace,
+but when you call `whitespace-cleanup-force' you still want to
+zap it."
+  (interactive)
+  (let* ((whitespace-style '(tabs spaces trailing lines space-before-tab
+                                  newline indentation empty space-after-tab
+                                  space-mark tab-mark newline-mark)))
+    (whitespace-cleanup)))
