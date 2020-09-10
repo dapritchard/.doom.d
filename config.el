@@ -304,7 +304,10 @@
 
   (general-def 'inferior-ess-mode-map
     ";" 'ess-insert-assign
-    "C-S-m" (lambda () (interactive) (insert " %>% "))))
+    "C-S-m" (lambda () (interactive) (insert " %>% ")))
+
+  ;; (load! "lisp/ess+/ess-history.el")
+  )
 
 
 ;; nicer `open-line' ----------------------------------------------------------
