@@ -81,6 +81,20 @@
   "C-j" nil)
 
 
+;; truncate lines management --------------------------------------------------
+
+;; the default behavior for when lines are longer than the window size is line
+;; wrapping, but set programming modes to truncate lines instead. Note that we
+;; could use `(set-default truncate-lines t)' to set this globally, but I prefer
+;; line wrap for comint modes.
+(defun use-truncate-lines () (setq-local truncate-lines t))
+(add-hook 'prog-mode-hook 'use-truncate-lines)
+(add-hook 'dired-mode 'use-truncate-lines)
+(add-hook 'yaml-mode 'use-truncate-lines)
+(add-hook 'ivy-occur-grep-mode 'use-truncate-lines)
+
+
+
 ;; window movement ------------------------------------------------------------
 
 (general-def
