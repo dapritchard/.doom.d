@@ -259,21 +259,21 @@
 
 ;; TODO move this into a smartparens block.  See https://github.com/Fuco1/.emacs.d/blob/master/files/smartparens.el
 (general-def
-  "s-f" 'sp-down-sexp
-  "s-F" 'sp-backward-down-sexp
+  "s-d" 'sp-down-sexp
+  "s-D" 'sp-backward-down-sexp
   "s-a" 'sp-beginning-of-sexp
   "s-e" 'sp-end-of-sexp
-  "s-v" 'sp-up-sexp
-  "s-V" 'sp-backward-up-sexp
+  "s-f" 'sp-up-sexp
+  "s-F" 'sp-backward-up-sexp
   "C-M-t" 'sp-transpose-sexp
   "s-W" 'sp-kill-sexp
   "s-w" 'sp-copy-sexp
-  "s-d" 'sp-unwrap-sexp
-  "s-D" 'sp-backward-unwrap-sexp
+  "s-x" 'sp-unwrap-sexp
+  "s-X" 'sp-backward-unwrap-sexp
   "s-g" 'sp-forward-slurp-sexp
   "s-G" 'sp-backward-slurp-sexp
-  "s-b" 'sp-forward-barf-sexp
-  "s-B" 'sp-backward-barf-sexp
+  "s-v" 'sp-forward-barf-sexp
+  "s-V" 'sp-backward-barf-sexp
   "s-q" 'sp-forward-whitespace
   "s-s" 'sp-split-sexp
   "s-S" 'sp-join-sexp
