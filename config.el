@@ -94,7 +94,6 @@
 (add-hook 'ivy-occur-grep-mode 'use-truncate-lines)
 
 
-
 ;; window movement ------------------------------------------------------------
 
 (general-def
@@ -112,7 +111,7 @@
 ;;   "o" #'dired-find-file-other-window)
 
 
-;; info -----------------------------------------------------------------------
+;; Info -----------------------------------------------------------------------
 
 ;; `Info-scroll-down' is DEL in normal state, but `Info-state-up' doesn't have a
 ;; keybinding, so let's make it next to DEL, noting that "=" is unused.
@@ -199,8 +198,9 @@
 
 (use-package! ace-window
   :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (setq aw-background nil)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-background nil
+        aw-dispatch-always t)
   :general
   ("M-o" 'ace-window))
 
@@ -321,6 +321,7 @@
     "C-S-m" (lambda () (interactive) (insert " %>% ")))
 
   ;; (load! "lisp/ess+/ess-history.el")
+  (load! "lisp/ess+/ess-utils.el")
   )
 
 
