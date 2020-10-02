@@ -53,12 +53,20 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; swap the location of the meta and super keys
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'super)
+
+;; In ~/.emacs.d/docs/faq.org it says that doom env already provides this
+;; functionality. See the "Doom can't find my executables/doesn't inherit the
+;; correct PATH" section.
 (use-package exec-path-from-shell
   :config
   (when (display-graphic-p)
     (exec-path-from-shell-initialize)))
+
+;; from ~/.emacs.d/docs/faq.org
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 
 ;; general keybindings --------------------------------------------------------
@@ -72,6 +80,12 @@
 (general-def '(normal motion)
   "9" #'evil-digit-argument-or-evil-beginning-of-line
   "0" #'evil-end-of-line)
+
+;; ;; TAB is bound to `better-jumper-jump-forward', which is also bound to "C-i",
+;; ;; so let's make it perform indentation since that is what I'm used to from
+;; ;; regular Emacs
+;; (general-def '(normal visual motion)
+;;   "TAB" #'evil-indent)
 
 ;; by default "C-j" is bound to an alias for newline in insert mode, and is
 ;; bound `electric-newline-and-maybe-indent' in the global map, but I like to
@@ -178,6 +192,17 @@
 ;; ignore buffers created by polymode
 (add-to-list 'ibuffer-never-show-predicates "\\*help\\[R\\]\\(.*\\)\\[head-tail\\]")
 (add-to-list 'ibuffer-never-show-predicates "\\*help\\[R\\]\\(.*\\)\\*\\[R\\]")
+
+
+;; abbrev ----------------------------------------------------------------------
+
+(use-package! abbrev
+  :defer 1
+  :custom
+  (abbrev-mode 1)
+  :config
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file)))
 
 
 (use-package! evil
@@ -348,7 +373,17 @@ sometimes you don't want to visualize every type of whitespace,
 but when you call `whitespace-cleanup-force' you still want to
 zap it."
   (interactive)
-  (let* ((whitespace-style '(tabs spaces trailing lines space-before-tab
-                                  newline indentation empty space-after-tab
-                                  space-mark tab-mark newline-mark)))
+  (let* ((whitespace-style
+          '(tabs
+            spaces
+            trailing
+            lines
+            space-before-tab
+            newline
+            indentation
+            empty
+            space-after-tab
+            space-mark
+            tab-mark
+            newline-mark)))
     (whitespace-cleanup)))
