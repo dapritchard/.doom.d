@@ -385,4 +385,8 @@ zap it."
     (whitespace-cleanup)))
 
 (load! "lisp/utils/title-case.el")
-(general-def "M-T" 'dp-title-case-region-or-line)
+(general-def "M-T" #'dp-title-case-region-or-line)
+
+(load! "lisp/utils/align-regexp-variants.el")
+(general-def '(normal visual insert)
+  "+" #'align-regexp-=)
