@@ -383,3 +383,6 @@ zap it."
             tab-mark
             newline-mark)))
     (whitespace-cleanup)))
+
+(load! "lisp/utils/title-case.el")
+(general-def "M-T" 'dp-title-case-region-or-line)
