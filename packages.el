@@ -51,4 +51,4 @@
 
 (package! ace-window)
 (package! evil-smartparens)
-(package! exec-path-from-shell)
+;; (package! exec-path-from-shell)
