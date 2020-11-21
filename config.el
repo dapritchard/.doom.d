@@ -57,13 +57,13 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'super)
 
-;; In ~/.emacs.d/docs/faq.org it says that doom env already provides this
-;; functionality. See the "Doom can't find my executables/doesn't inherit the
-;; correct PATH" section.
-(use-package exec-path-from-shell
-  :config
-  (when (display-graphic-p)
-    (exec-path-from-shell-initialize)))
+;; ;; In ~/.emacs.d/docs/faq.org it says that doom env already provides this
+;; ;; functionality. See the "Doom can't find my executables/doesn't inherit the
+;; ;; correct PATH" section.
+;; (use-package exec-path-from-shell
+;;   :config
+;;   (when (display-graphic-p)
+;;     (exec-path-from-shell-initialize)))
 
 ;; from ~/.emacs.d/docs/faq.org
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
