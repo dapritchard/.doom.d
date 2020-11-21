@@ -94,6 +94,9 @@
 (general-def 'insert
   "C-j" nil)
 
+;; TODO: keybinding for refreshing ivy-occur
+;; https://www.reddit.com/r/emacs/comments/99n7er/question_refresh_occur_buffer/
+
 
 ;; truncate lines management --------------------------------------------------
 
@@ -139,6 +142,7 @@
 
 ;; Ibuffer --------------------------------------------------------------------
 
+;; FIXME: we shouldn't have to load these packages in the config
 (require 'ibuffer)
 (require 'ibuf-ext)
 
@@ -201,9 +205,16 @@
   :custom
   (abbrev-mode 1)
   :config
-  (if (file-exists-p abbrev-file-name)
-      (quietly-read-abbrev-file)))
+  (when (file-exists-p abbrev-file-name)
+    (quietly-read-abbrev-file)))
 
+
+;; projectile ------------------------------------------------------------------
+
+(use-package! projectile
+  :general
+  (:keymaps 'projectile-command-map
+   "I" #'projectile-ibuffer))
 
 (use-package! evil
   :custom
@@ -252,28 +263,6 @@
   "M-}" #'er/contract-region
   "M-O" #'er/mark-defun
   "M-P" #'er/mark-paragraph)
-
-;; vim has a concept of a jump-list, which is managed by the 'better-jumper'
-;; package, which are seemingly triggered by motions and can be jumped around
-;; using "C-o" and "C-i". You can manually add a position to the jump list by
-;; using (the non-interactive function) `evil-set-jump'.
-
-;; manage jumps "per-buffer", rather than "per-window."
-(setq better-jumper-context 'buffer)
-
-;; by default bound to `company/complete'
-(general-def 'insert "C-SPC")
-
-;; by default bound to `evil-scroll-up'
-(general-def 'motion "C-u")
-
-;; So that we can press e.g. C-u C-SPC C-SPC C-SPC to pop the mark three times.
-(setq set-mark-command-repeat-pop t)
-
-
-;; use Ibuffer for Buffer List.  This is also 'SPC b i'.
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
 
 
 (use-package! smartparens
