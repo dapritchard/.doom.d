@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: test_that
+# key: te
+# group: testthat
+# --
+test_that("${1:description}", {
+  $0
+})

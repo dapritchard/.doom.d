@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: function
+# key: fu
+# group: function_calls
+# --
+function(${1:arguments}) {
+   $0
+}

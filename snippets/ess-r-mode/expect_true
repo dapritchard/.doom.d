@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expect_true
+# key: exptr
+# group: testthat
+# --
+expect_true(${actual})

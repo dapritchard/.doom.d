@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: function inline
+# key: fun
+# group: function_calls
+# --
+function($1) $0
