@@ -49,8 +49,10 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! ace-window)
+(unpin! ess)
+(package! ess
+  :recipe (:local-repo "ESS" :repo "dapritchard/ESS" :branch "my-fork"))
+
 (package! evil-smartparens)
-;; (package! exec-path-from-shell)
 
 (package! dhall-mode)
