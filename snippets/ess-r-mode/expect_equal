@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expect_equal
+# key: expeq
+# group: testthat
+# --
+expect_equal(${1:actual}, ${2:target})$0

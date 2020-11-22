@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: expect_identical
+# key: expid
+# group: testthat
+# --
+expect_identical(${1:actual}, ${2:target})$0
