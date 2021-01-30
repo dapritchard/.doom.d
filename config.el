@@ -391,7 +391,10 @@
         ess-plain-first-buffername nil                   ; name the first R process R:1 for consistency
         ess-auto-width 'window                           ; synchronize R's "width" option to the window width
         ess-roxy-str "#'"                                ; so Roxygen comments are #' not ##'
-        inferior-R-args "--no-restore-data --no-save")   ; command line parameters when starting R
+        inferior-R-args "--no-restore-data --no-save"    ; command line parameters when starting R
+        ess-directory-function
+        (lambda ()
+          (plist-get (ess-r-package-info) :root)))       ; suggest the package root (when applicable) when launching a new R process
 
   ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
   (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
