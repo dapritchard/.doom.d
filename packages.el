@@ -52,7 +52,7 @@
 (unpin! ess)
 (package! ess
   :recipe (:local-repo "ESS" :repo "dapritchard/ESS" :branch "my-fork"))
-
-(package! evil-smartparens)
-
 (package! dhall-mode)
+(package! org-gcal
+  :recipe (:host github :repo "kidd/org-gcal.el"))
+(package! evil-smartparens)
