@@ -209,6 +209,51 @@
     (quietly-read-abbrev-file)))
 
 
+;; org -------------------------------------------------------------------------
+
+(defun org-todo-todo ()
+  (org-todo "TODO"))
+
+(use-package! org
+
+  :custom
+
+  ;; Allows you to create a new node when refiling
+  (org-refile-allow-creating-parent-nodes 'confirm)
+
+  ;; Used by some of the Capture templates to construct the location of to-do
+  ;; notes
+  (+org-capture-todo-file "inbox.org")
+
+  ;; Setting this to a non-nil value enables logging of state changes into a
+  ;; per-entry drawer. A value of `t' corresponds to the LOGBOOK drawer.
+  (org-log-into-drawer t)
+
+  :config
+
+  ;; add keybindings
+  (map! :after org-agenda
+        :map org-agenda-mode-map
+        :localleader
+        "l" #'org-agenda-log-mode)
+
+  ;; update the list of included Org modules
+  (add-to-list 'org-modules 'org-checklist)
+
+  ;; Global to-do keywords. Based on Doom's default settings, but with added
+  ;; logging (i.e. ! and @). NOTE: for some reason this doesn't work if I place
+  ;; it in the `:custom' section.
+  (setq
+   org-todo-keywords
+   '((sequence "TODO(t!)" "PROJ(p)" "STRT(s!)" "WAIT(w@)" "HOLD(h@)" "|" "DONE(d!)" "KILL(k@)")
+     (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")))
+
+  ;; Shadow the existing Capture "todo" entry. FIXME: both "t"s still show up in
+  ;; the Capture templates.
+  (add-to-list 'org-capture-templates
+               '("t" "Personal todo" entry
+                 (file+headline +org-capture-todo-file "Inbox")
+                 "* %?\n\n%a" :prepend t)))
 ;; projectile ------------------------------------------------------------------
 
 (use-package! projectile
