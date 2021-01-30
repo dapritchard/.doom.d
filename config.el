@@ -274,10 +274,18 @@
 
 ;; projectile ------------------------------------------------------------------
 
+;; add projectile keybinds to "i" and "d" to mirror the "buffer" versions of
+;; these, and move the functions currently bound to those keys to "I" and "D".
+;; These changes overwrite the original binding of "D", which by default is
+;; bound to `+default/discover-projects' (there is no original binding to "I").
+;; FIXME: need to update the which-key bindings
 (use-package! projectile
   :general
-  (:keymaps 'projectile-command-map
-   "I" #'projectile-ibuffer))
+  (:keymaps 'doom-leader-project-map
+   "i" #'projectile-ibuffer
+   "d" #'projectile-find-dir
+   "I" #'projectile-invalidate-cache
+   "D" #'projectile-remove-known-project))
 
 (use-package! evil
   :custom
