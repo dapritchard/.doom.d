@@ -110,6 +110,8 @@
 (add-hook 'yaml-mode 'use-truncate-lines)
 (add-hook 'ivy-occur-grep-mode 'use-truncate-lines)
 
+(general-def 'doom-leader-toggle-map
+  "t" #'toggle-truncate-lines)
 
 ;; window movement ------------------------------------------------------------
 
@@ -117,8 +119,7 @@
   "s-h" #'evil-window-left
   "s-j" #'evil-window-down
   "s-k" #'evil-window-up
-  "s-l" #'evil-window-right
-)
+  "s-l" #'evil-window-right)
 
 
 ;; dired ----------------------------------------------------------------------
@@ -130,6 +131,9 @@
 
 ;; Info -----------------------------------------------------------------------
 
+;; FIXME: the keybindings below get overwritten somehow, I have to exectute them
+;; by re-exectute the command each time I restart Emacs.
+
 ;; `Info-scroll-down' is DEL in normal state, but `Info-state-up' doesn't have a
 ;; keybinding, so let's make it next to DEL, noting that "=" is unused.
 ;; Additionally, I swap the keybindings for the two, since I'm most often
@@ -137,7 +141,6 @@
 (general-def 'normal 'Info-mode-map
   "=" #'Info-scroll-down
   "DEL" #'Info-scroll-up)
-
 
 
 ;; Ibuffer --------------------------------------------------------------------
@@ -459,5 +462,5 @@ zap it."
 (general-def "M-T" #'dp-title-case-region-or-line)
 
 (load! "lisp/utils/align-regexp-variants.el")
-(general-def '(normal visual insert)
+(general-def '(normal visual)
   "+" #'align-regexp-=)

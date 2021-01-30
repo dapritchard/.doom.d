@@ -3,6 +3,6 @@
 # key: fu
 # group: function_calls
 # --
-function(${1:arguments}) {
+function($1) {
    $0
 }
