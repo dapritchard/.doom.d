@@ -254,6 +254,24 @@
                '("t" "Personal todo" entry
                  (file+headline +org-capture-todo-file "Inbox")
                  "* %?\n\n%a" :prepend t)))
+
+;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
+(use-package org-gcal
+  :after org
+  :config
+  (setq org-gcal-client-id "647603884391-2ljnnlbqocg6ub4glfod475og1atndhr.apps.googleusercontent.com"
+        org-gcal-client-secret "7pTkJSrjULYw0Fx16VvPknnj"
+        org-gcal-file-alist '(("dpritchard@novisci.com" . "~/Documents/org/gcal-work.org"))
+        org-gcal-header-alist '(("dpritchard@novisci.com" . "#+PROPERTY: TIMELINE_FACE \"pink\"\n"))
+        org-gcal-auto-archive nil
+        org-gcal-notify-p nil)
+  (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
+  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch))
+
+;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+
 ;; projectile ------------------------------------------------------------------
 
 (use-package! projectile
