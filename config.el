@@ -347,7 +347,13 @@
 
 (use-package evil-smartparens
   :config
-  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
+  ;; `evil-sp-override' overwrites `exchange-point-and-mark's keybinding of "o",
+  ;; so let's restore that and give it a new keybinding
+  :general
+  ('visual
+   "o" #'exchange-point-and-mark
+   "C-M-o" #'evil-sp-override))
 
 ;; the "Smartparens config" section of
 ;; ~/.emacs.d/modules/config/default/config.el has a section that calls
