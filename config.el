@@ -269,10 +269,10 @@
         org-gcal-auto-archive nil
         org-gcal-notify-p nil)
   (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
-  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch))
+  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch)
+  ;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
-;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (use-package org-mru-clock
   :custom
