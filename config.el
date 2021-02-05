@@ -274,6 +274,25 @@
 ;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+(use-package org-mru-clock
+  :custom
+  (org-mru-clock-how-many 30 "Increase the number of clock entries to look up")
+  (org-mru-clock-completing-read #'ivy-completing-read "Use Ivy for completion")
+  :general
+  (:keymaps 'doom-leader-notes-map
+   :wk-full-keys nil
+   "h" '(:prefix-command org-mru-clock-map :which-key "org-mru-clock"))
+  ('org-mru-clock-map
+   :wk-full-keys nil
+   "a" 'org-mru-clock-add-note
+   "h" 'org-mru-clock-to-history
+   "i" 'org-mru-clock-in
+   "n" 'org-mru-clock-show-narrowed
+   "g" 'org-mru-clock-goto
+   "s" 'org-mru-clock-select-recent-task)
+  :init
+  (add-hook minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
+
 
 ;; projectile ------------------------------------------------------------------
 
@@ -281,7 +300,6 @@
 ;; these, and move the functions currently bound to those keys to "I" and "D".
 ;; These changes overwrite the original binding of "D", which by default is
 ;; bound to `+default/discover-projects' (there is no original binding to "I").
-;; FIXME: need to update the which-key bindings
 (use-package! projectile
   :general
   (:keymaps 'doom-leader-project-map

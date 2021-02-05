@@ -56,3 +56,4 @@
 (package! org-gcal
   :recipe (:host github :repo "kidd/org-gcal.el"))
 (package! evil-smartparens)
+(package! org-mru-clock)
