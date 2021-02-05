@@ -409,17 +409,23 @@
 
 ;; ESS -------------------------------------------------------------------------
 
+(defun ess-r-package-root (&optional dir)
+  "Return the path of the current package as a string."
+  (plist-get (ess-r-package-info dir) :root))
+
+(defun dp-r-package-or-project-root (&optional dir)
+  "Return the path of the current R package or project as a string."
+  (or (ess-r-package-root dir) (projectile-project-root dir)))
+
 (after! ess
 
-  (setq ess-style 'RStudio                               ; set the indentation style to mimic RStudio's
-        ess-indent-with-fancy-comments nil               ; always indent comments to current code depth
-        ess-plain-first-buffername nil                   ; name the first R process R:1 for consistency
-        ess-auto-width 'window                           ; synchronize R's "width" option to the window width
-        ess-roxy-str "#'"                                ; so Roxygen comments are #' not ##'
-        inferior-R-args "--no-restore-data --no-save"    ; command line parameters when starting R
-        ess-directory-function
-        (lambda ()
-          (plist-get (ess-r-package-info) :root)))       ; suggest the package root (when applicable) when launching a new R process
+  (setq ess-style 'RStudio                                     ; set the indentation style to mimic RStudio's
+        ess-indent-with-fancy-comments nil                     ; always indent comments to current code depth
+        ess-plain-first-buffername nil                         ; name the first R process R:1 for consistency
+        ess-auto-width 'window                                 ; synchronize R's "width" option to the window width
+        ess-roxy-str "#'"                                      ; so Roxygen comments are #' not ##'
+        inferior-R-args "--no-restore-data --no-save"          ; command line parameters when starting R
+        ess-directory-function #'dp-r-package-or-project-root) ; suggest the package or project root when launching a new R process
 
   ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
   (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
