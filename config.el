@@ -303,10 +303,11 @@
 (use-package! projectile
   :general
   (:keymaps 'doom-leader-project-map
-   "i" #'projectile-ibuffer
-   "d" #'projectile-find-dir
-   "I" #'projectile-invalidate-cache
-   "D" #'projectile-remove-known-project))
+   :wk-full-keys nil
+   "i" '(projectile-ibuffer :which-key "Ibuffer in project")
+   "d" '(projectile-find-dir :which-key "Dired open in project")
+   "I" '(projectile-invalidate-cache :which-key "Invalidate project cache")
+   "D" '(projectile-remove-known-project :which-key "Remove known project")))
 
 (use-package! evil
   :custom
