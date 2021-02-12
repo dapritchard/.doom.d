@@ -217,10 +217,32 @@
     (quietly-read-abbrev-file)))
 
 
+;; compilation -----------------------------------------------------------------
+
+(defvar notify-macos-sound-preference "pop"
+  "Defines a default sound that can be used when providing a
+  macOS notification. The default available sound choices can be
+  found in /System/Library/Sounds for macOS 10.15.7")
+
+(defun compilation-finish-notify-macos (buffer msg)
+  "Provide a system notification based on a compilation buffer.
+This function is useful when added to the hook
+`compilation-finish-functions'."
+  ;; Another potentially useful value is `compilation-directory', however macOS
+  ;; notifications truncates our messages so there isn't enough space to include
+  ;; that information.
+  (let* ((cmd-args (buffer-local-value 'compilation-arguments buffer))
+         (cmd-args-cmd (car cmd-args)))
+    (notify-macos cmd-args-cmd "Compilation results" msg notify-macos-sound-preference)))
+
+(add-hook 'compilation-finish-functions 'compilation-finish-notify-macos)
+
+
 ;; org -------------------------------------------------------------------------
 
-(defun org-todo-todo ()
-  (org-todo "TODO"))
+;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\(_archive\\)?\\'")
+;; (setq org-agenda-start-day "-19d")
+;; (setq org-agenda-span 20)
 
 (use-package! org
 
@@ -295,8 +317,8 @@
    "n" 'org-mru-clock-show-narrowed
    "g" 'org-mru-clock-goto
    "s" 'org-mru-clock-select-recent-task)
-  :init
-  (add-hook minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
+  :config
+  (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
 
 
 ;; projectile ------------------------------------------------------------------
@@ -418,6 +440,7 @@
   "Return the path of the current package as a string."
   (plist-get (ess-r-package-info dir) :root))
 
+;; FIXME: does this work for a remote process?
 (defun dp-r-package-or-project-root (&optional dir)
   "Return the path of the current R package or project as a string."
   (or (ess-r-package-root dir) (projectile-project-root dir)))
@@ -430,7 +453,8 @@
         ess-auto-width 'window                                 ; synchronize R's "width" option to the window width
         ess-roxy-str "#'"                                      ; so Roxygen comments are #' not ##'
         inferior-R-args "--no-restore-data --no-save"          ; command line parameters when starting R
-        ess-directory-function #'dp-r-package-or-project-root) ; suggest the package or project root when launching a new R process
+        ;; ess-directory-function #'dp-r-package-or-project-root
+        ) ; suggest the package or project root when launching a new R process
 
   ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
   (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
