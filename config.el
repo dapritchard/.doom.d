@@ -69,6 +69,11 @@
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 
+;; load config files -----------------------------------------------------------
+
+(load! "lisp/utils/notify-macos.el")
+
+
 ;; general keybindings --------------------------------------------------------
 
 (general-def
