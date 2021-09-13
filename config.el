@@ -54,8 +54,9 @@
 ;; they are implemented.
 
 ;; swap the location of the meta and super keys
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'super)
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'super
+      mac-right-option-modifier 'super)
 
 ;; ;; In ~/.emacs.d/docs/faq.org it says that doom env already provides this
 ;; ;; functionality. See the "Doom can't find my executables/doesn't inherit the
