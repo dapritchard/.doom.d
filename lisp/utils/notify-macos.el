@@ -15,7 +15,7 @@ used for the title."
                   (notify-macos--create-element-str "with title" title)
                   (notify-macos--create-element-str "subtitle" subtitle)
                   (notify-macos--create-element-str "sound name" sound))))
-    (ns-do-applescript applescript-msg)))
+    (mac-do-applescript applescript-msg)))
 
 (defun notify-macos--create-element-str (command value)
   "Concatenate inputs and wrap 2nd term in escaped quotes."
