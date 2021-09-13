@@ -252,6 +252,16 @@ This function is useful when added to the hook
 
 (general-def 'doom-leader-workspace-map
   "1" #'+workspace/other)
+
+
+;; artist mode -----------------------------------------------------------------
+
+;; Not easy (possible?) to use a middle click with Apple Magic Mouse (or is it
+;; macOS in general?), so remap the edit menu to the right click.
+;; https://stackoverflow.com/a/24045691/5518304
+;; (define-key artist-mode-map [down-mouse-3] 'artist-mouse-choose-operation)
+
+
 ;; org -------------------------------------------------------------------------
 
 ;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\(_archive\\)?\\'")
@@ -300,23 +310,27 @@ This function is useful when added to the hook
   (add-to-list 'org-capture-templates
                '("t" "Personal todo" entry
                  (file+headline +org-capture-todo-file "Inbox")
-                 "* %?\n\n%a" :prepend t)))
+                 "* %?\n\n%a" :prepend t))
 
-;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
-(use-package org-gcal
-  :after org
-  :config
-  (setq org-gcal-client-id "647603884391-2ljnnlbqocg6ub4glfod475og1atndhr.apps.googleusercontent.com"
-        org-gcal-client-secret "7pTkJSrjULYw0Fx16VvPknnj"
-        org-gcal-file-alist '(("dpritchard@novisci.com" . "~/Documents/org/gcal-work.org"))
-        org-gcal-header-alist '(("dpritchard@novisci.com" . "#+PROPERTY: TIMELINE_FACE \"pink\"\n"))
-        org-gcal-auto-archive nil
-        org-gcal-notify-p nil)
-  (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
-  (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch)
-  ;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+  ;; Create custom agenda commands
+  (setq
+   org-agenda-custom-commands
+   '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1"))))
 
+;; ;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
+;; (use-package org-gcal
+;;   :after org
+;;   :config
+;;   (setq org-gcal-client-id "647603884391-2ljnnlbqocg6ub4glfod475og1atndhr.apps.googleusercontent.com"
+;;         org-gcal-client-secret "7pTkJSrjULYw0Fx16VvPknnj"
+;;         org-gcal-file-alist '(("dpritchard@novisci.com" . "~/Documents/org/gcal-work.org"))
+;;         org-gcal-header-alist '(("dpritchard@novisci.com" . "#+PROPERTY: TIMELINE_FACE \"pink\"\n"))
+;;         org-gcal-auto-archive nil
+;;         org-gcal-notify-p nil)
+;;   (add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
+;;   (add-hook 'org-capture-after-finalize-hook 'org-gcal-fetch)
+;;   ;; https://www.reddit.com/r/emacs/comments/cdei4p/failed_to_download_gnu_archive_bad_request
+;;   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 (use-package org-mru-clock
   :custom
