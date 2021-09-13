@@ -491,6 +491,24 @@ This function is useful when added to the hook
 ;; helpful ---------------------------------------------------------------------
 
 (setq find-function-C-source-directory "~/Documents/software/emacs")
+
+
+;; comint ----------------------------------------------------------------------
+
+;; customize comint (command interpreter) settings, as described in the ESS
+;; manual, section 4.3
+(eval-after-load "comint"
+   '(progn
+      ;; (define-key comint-mode-map [up]
+      ;;   'comint-previous-matching-input-from-input)
+      ;; (define-key comint-mode-map [down]
+      ;;   'comint-next-matching-input-from-input)
+      ;; ;; also recommended for ESS use --
+      (setq comint-scroll-to-bottom-on-output 'others)
+      (setq comint-scroll-show-maximum-output t)
+      ;; ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
+      ;; (setq comint-scroll-to-bottom-on-input 'this)
+      ))
 ;; ESS -------------------------------------------------------------------------
 
 (defun ess-r-package-root (&optional dir)
