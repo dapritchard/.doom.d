@@ -509,6 +509,20 @@ This function is useful when added to the hook
       ;; ;; somewhat extreme, almost disabling writing in *R*, *shell* buffers above prompt:
       ;; (setq comint-scroll-to-bottom-on-input 'this)
       ))
+
+
+;; magit -----------------------------------------------------------------------
+
+(use-package! magit
+  :general
+  (:keymaps 'doom-leader-git-map
+   :wk-full-keys nil
+   "d" '(git-gutter:popup-diff :which-key "Popup hunk diff")
+   "w" '(git-gutter:update-all-windows :which-key "Update window's gutter")
+   "W" '(git-gutter:update-all-windows :which-key "Update all window's gutters")))
+
+
+
 ;; ESS -------------------------------------------------------------------------
 
 (defun ess-r-package-root (&optional dir)
