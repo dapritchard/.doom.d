@@ -66,8 +66,8 @@
 ;;   (when (display-graphic-p)
 ;;     (exec-path-from-shell-initialize)))
 
-;; from ~/.emacs.d/docs/faq.org
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; ;; from ~/.emacs.d/docs/faq.org
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 
 ;; load config files -----------------------------------------------------------
