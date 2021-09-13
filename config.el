@@ -486,6 +486,11 @@ This function is useful when added to the hook
 ;; deadgrep --------------------------------------------------------------------
 
 (use-package! deadgrep)
+
+
+;; helpful ---------------------------------------------------------------------
+
+(setq find-function-C-source-directory "~/Documents/software/emacs")
 ;; ESS -------------------------------------------------------------------------
 
 (defun ess-r-package-root (&optional dir)
