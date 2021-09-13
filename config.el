@@ -239,8 +239,11 @@ This function is useful when added to the hook
   ;; notifications truncates our messages so there isn't enough space to include
   ;; that information.
   (let* ((cmd-args (buffer-local-value 'compilation-arguments buffer))
-         (cmd-args-cmd (car cmd-args)))
-    (notify-macos cmd-args-cmd "Compilation results" msg notify-macos-sound-preference)))
+         (cmd-dir (buffer-local-value 'compilation-directory buffer))
+         (cmd-args-cmd (car cmd-args))
+         (msg-status (if (string= msg "finished\n") "success 🎉" "failure 💣"))
+         (msg-title (concat "Compilation: " msg-status)))
+    (notify-macos cmd-dir msg-title cmd-args-cmd notify-macos-sound-preference)))
 
 (add-hook 'compilation-finish-functions 'compilation-finish-notify-macos)
 
