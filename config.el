@@ -351,6 +351,21 @@ This function is useful when added to the hook
   :config
   (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
 
+;; https://github.com/atheriel/org-clock-csv
+(use-package! org-clock-csv)
+
+(defun dp-workspace-switch-org ()
+  "Switch to the org workspace and maximize gtd.org"
+  (interactive)
+  (let ((+workspaces-switch-project-function
+         (lambda (_)
+           (progn (find-file (expand-file-name "~/Documents/org/gtd.org"))
+                  (doom/window-maximize-buffer)))))
+    (+workspaces-switch-to-project-h (expand-file-name "~/Documents/org"))))
+
+(general-def 'doom-leader-workspace-map
+  "o" #'dp-workspace-switch-org)
+
 
 ;; projectile ------------------------------------------------------------------
 
