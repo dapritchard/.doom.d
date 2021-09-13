@@ -570,6 +570,13 @@ This function is useful when added to the hook
   )
 
 
+;; Haskell ---------------------------------------------------------------------
+
+(general-def 'haskell-mode-map
+    "C-c C-s" #'haskell-interactive-bring)  ; clobbers `haskell-mode-toggle-scc-at-point'
+
+
+
 ;; Dhall -----------------------------------------------------------------------
 
 (use-package! dhall-mode
