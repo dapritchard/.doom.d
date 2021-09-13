@@ -273,6 +273,9 @@ This function is useful when added to the hook
   ;; per-entry drawer. A value of `t' corresponds to the LOGBOOK drawer.
   (org-log-into-drawer t)
 
+  ;; Show only entries that have received clocked time on that day.
+  (org-agenda-log-mode-items '(clock))
+
   :config
 
   ;; add keybindings
