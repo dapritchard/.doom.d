@@ -483,6 +483,9 @@ This function is useful when added to the hook
   "s-r" 'sp-rewrap-sexp)
 
 
+;; deadgrep --------------------------------------------------------------------
+
+(use-package! deadgrep)
 ;; ESS -------------------------------------------------------------------------
 
 (defun ess-r-package-root (&optional dir)
