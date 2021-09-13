@@ -86,11 +86,12 @@
   "C-9" #'previous-buffer
   "C-0" #'next-buffer
   "M-[" #'scroll-down-line
-  "M-]" #'scroll-up-line)
+  "M-]" #'scroll-up-line
+  "C-\\" #'text-scale-increase)
 
 (general-def '(normal motion)
   "9" #'evil-digit-argument-or-evil-beginning-of-line
-  "0" #'evil-end-of-line)
+  "0" #'evil-last-non-blank)
 
 ;; ;; TAB is bound to `better-jumper-jump-forward', which is also bound to "C-i",
 ;; ;; so let's make it perform indentation since that is what I'm used to from
