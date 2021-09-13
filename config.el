@@ -396,15 +396,13 @@ This function is useful when added to the hook
 ;; set the ace-window keys to the home row, and give `ace-window' the keybinding
 ;; that was originally assigned to `doom/window-enlargen' (and find an unused
 ;; binding for that function)
-(use-package! ace-window
-  :config
+(general-def 'evil-window-map
+  "o" #'ace-window
+  "e" #'doom/window-enlargen)
+(after! ace-window
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-background nil
-        aw-dispatch-always t)
-  :general
-  (:keymaps 'evil-window-map
-   "o" #'ace-window
-   "e" #'doom/window-enlargen))
+        aw-dispatch-always t))
 
 ;; adding the symbol `tramp-own-remote-path' adds the PATHs used by the remote
 ;; user to the search path. See
