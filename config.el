@@ -525,6 +525,9 @@ This function is useful when added to the hook
 
 ;; ESS -------------------------------------------------------------------------
 
+;; TODO: see https://github.com/emacs-ess/ESS/issues/1137 for a possible config
+;; tweak?
+
 (defun ess-r-package-root (&optional dir)
   "Return the path of the current package as a string."
   (plist-get (ess-r-package-info dir) :root))
@@ -552,9 +555,11 @@ This function is useful when added to the hook
     ";" #'ess-insert-assign
     "C-j" #'ess-eval-region-or-line-visibly-and-step)
 
+  ;; this clobbers the keybinding to "C-c C-k" for `ess-force-buffer-current'
   (general-def 'ess-r-mode-map
     "C-S-m" (lambda () (interactive) (insert " %>% "))
-    "C-c C-h" #'dp-ess-eval-word)
+    "C-c C-h" #'dp-ess-eval-word
+    "C-c C-k" #'dp-ess-str-word)
 
   (general-def 'inferior-ess-mode-map
     ";" 'ess-insert-assign
