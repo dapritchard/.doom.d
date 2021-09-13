@@ -248,6 +248,10 @@ This function is useful when added to the hook
 (add-hook 'compilation-finish-functions 'compilation-finish-notify-macos)
 
 
+;; persp / workspace -----------------------------------------------------------
+
+(general-def 'doom-leader-workspace-map
+  "1" #'+workspace/other)
 ;; org -------------------------------------------------------------------------
 
 ;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\(_archive\\)?\\'")
