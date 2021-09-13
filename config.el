@@ -420,7 +420,12 @@ This function is useful when added to the hook
 ;; (setq doom-themes-treemacs-theme "doom-atom")
 ;; (setq doom-themes-treemacs-theme "doom-colors")
 (after! treemacs
-  (setq doom-themes-treemacs-theme "doom-colors"))
+  (general-def 'evil-treemacs-state-map
+  "C-=" #'text-scale-increase
+  "C--" #'text-scale-decrease)
+  (setq doom-themes-treemacs-theme "doom-colors")
+  ;; https://github.com/Alexander-Miller/treemacs/issues/228#issuecomment-403585786
+  (define-key treemacs-mode-map [mouse-1] #'treemacs-single-click-expand-action))
 
 (general-def
   "M-{" #'er/expand-region
