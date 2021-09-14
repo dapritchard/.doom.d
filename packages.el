@@ -49,11 +49,18 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(unpin! ess)
+;; (unpin! ess)
+;; (package! ESS
+;;   :recipe (:local-repo "ess" :branch "master"))
 (package! ess
-  :recipe (:local-repo "ESS" :repo "dapritchard/ESS" :branch "my-fork"))
+  :recipe (:local-repo "ess" :branch "master" :host github :repo "dapritchard/ESS"))
+;; (package! ESS
+;;   :recipe (:local-repo "ess" :branch "modify-package-info-to-return-remote-path"))
 (package! dhall-mode)
 (package! org-gcal
   :recipe (:host github :repo "kidd/org-gcal.el"))
 (package! evil-smartparens)
 (package! org-mru-clock)
+(package! org-clock-csv)
+(package! deadgrep)
+(package! adoc-mode)
