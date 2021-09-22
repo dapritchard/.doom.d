@@ -596,6 +596,16 @@ This function is useful when added to the hook
 ;; (global-set-key [remap open-line] #'open-line-and-indent)
 
 
+;; Python ---------------------------------------------------------------------
+
+(setq lsp-pyright-venv-path (expand-file-name "~/.virtualenvs")
+      lsp-pyright-python-executable-cmd "python3")
+
+(use-package! pyvenv
+  :config
+  (pyvenv-mode 1))
+
+
 ;; uncollected functions ------------------------------------------------------
 
 (defun whitespace-cleanup-force ()
