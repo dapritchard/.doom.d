@@ -601,6 +601,12 @@ This function is useful when added to the hook
 (setq lsp-pyright-venv-path (expand-file-name "~/.virtualenvs")
       lsp-pyright-python-executable-cmd "python3")
 
+;; Add the `env' directory to the list of directories to ignore for the LSP
+;; client under the assumption/convention that this is where virtual
+;; environments will be stored
+(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]env\\'")
+
+;; https://emacs.stackexchange.com/questions/13489/how-do-i-get-emacs-to-recognize-my-python-3-virtual-environment
 (use-package! pyvenv
   :config
   (pyvenv-mode 1))
