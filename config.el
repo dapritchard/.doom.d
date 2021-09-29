@@ -363,8 +363,19 @@ This function is useful when added to the hook
                   (doom/window-maximize-buffer)))))
     (+workspaces-switch-to-project-h (expand-file-name "~/Documents/org"))))
 
+(defun dp-workspace-switch-pw ()
+  "Switch to the pw file"
+  (interactive)
+  (let ((+workspaces-switch-project-function
+         (lambda (_)
+           (progn (find-file (expand-file-name "~/Documents/pw.gpg"))
+                  (doom/window-maximize-buffer)))))
+    (+workspaces-switch-to-project-h (expand-file-name "~/Documents"))
+    (+workspace/rename "pw")))
+
 (general-def 'doom-leader-workspace-map
-  "o" #'dp-workspace-switch-org)
+  "o" #'dp-workspace-switch-org
+  "p" #'dp-workspace-switch-pw)
 
 
 ;; projectile ------------------------------------------------------------------
