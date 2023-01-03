@@ -29,7 +29,7 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Documents/org/")
+(setq org-directory "~/Dev/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -78,6 +78,7 @@
 ;; load config files -----------------------------------------------------------
 
 (load! "lisp/utils/notify-macos.el")
+(load! "lisp/org-clock-csv-utils/org-clock-csv-utils.el")
 
 
 ;; general keybindings --------------------------------------------------------
@@ -87,10 +88,14 @@
   "C-0" #'next-buffer
   "M-[" #'scroll-down-line
   "M-]" #'scroll-up-line
-  "C-\\" #'text-scale-increase)
+  "C-\\" #'text-scale-increase
+  "s-t" #'transpose-frame)
+
+;; TODO: add mac copy/paste keybindings: https://emacs.stackexchange.com/questions/62227/enable-os-x-keys-in-emacs
 
 (general-def '(normal motion)
-  "9" #'evil-digit-argument-or-evil-beginning-of-line
+  "8" #'basic-save-buffer
+  "9" #'evil-beginning-of-visual-line
   "0" #'evil-last-non-blank)
 
 ;; ;; TAB is bound to `better-jumper-jump-forward', which is also bound to "C-i",
@@ -125,6 +130,7 @@
 (general-def 'doom-leader-toggle-map
   "t" #'toggle-truncate-lines)
 
+
 ;; window movement ------------------------------------------------------------
 
 (general-def
@@ -135,6 +141,9 @@
 
 
 ;; dired ----------------------------------------------------------------------
+
+;; https://stackoverflow.com/a/6845470/5518304 for opening certain filetypes
+;; with an external viewer
 
 ;; ;; `dired-find-file-other-window' is bound to "g-O", but I can never remember it
 ;; (general-def 'normal dired-mode-map
@@ -254,6 +263,10 @@ This function is useful when added to the hook
   "1" #'+workspace/other)
 
 
+;; multiple-cursors
+;; https://github.com/gabesoft/evil-mc/issues/83
+
+
 ;; artist mode -----------------------------------------------------------------
 
 ;; Not easy (possible?) to use a middle click with Apple Magic Mouse (or is it
@@ -264,9 +277,13 @@ This function is useful when added to the hook
 
 ;; org -------------------------------------------------------------------------
 
-;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\(_archive\\)?\\'")
-;; (setq org-agenda-start-day "-19d")
-;; (setq org-agenda-span 20)
+;; ;; (setq org-agenda-file-regexp "\\`[^.].*\\.org\\(_archive\\)?\\'")
+;; (setq org-agenda-start-day "-7d")
+;; ;; (setq org-agenda-start-day "-3d")
+;; ;; (setq org-agenda-start-day "0d")
+;; (setq org-agenda-span 15)
+;; ;; (setq org-agenda-span 10)
+;; ;; (setq org-agenda-span 5)
 
 (use-package! org
 
@@ -288,7 +305,8 @@ This function is useful when added to the hook
 
   :config
 
-  ;; add keybindings
+  ;; Add keybindings. Why did I use `map!' here rather than a 'general' command
+  ;; like I usually do?
   (map! :after org-agenda
         :map org-agenda-mode-map
         :localleader
@@ -297,13 +315,13 @@ This function is useful when added to the hook
   ;; update the list of included Org modules
   (add-to-list 'org-modules 'org-checklist)
 
-  ;; Global to-do keywords. Based on Doom's default settings, but with added
-  ;; logging (i.e. ! and @). NOTE: for some reason this doesn't work if I place
-  ;; it in the `:custom' section.
-  (setq
-   org-todo-keywords
-   '((sequence "TODO(t!)" "PROJ(p)" "STRT(s!)" "WAIT(w@)" "HOLD(h@)" "|" "DONE(d!)" "KILL(k@)")
-     (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")))
+  ;; ;; Global to-do keywords. Based on Doom's default settings, but with added
+  ;; ;; logging (i.e. ! and @). NOTE: for some reason this doesn't work if I place
+  ;; ;; it in the `:custom' section.
+  ;; (setq
+  ;;  org-todo-keywords
+  ;;  '((sequence "TODO(t!)" "PROJ(p)" "STRT(s!)" "WAIT(w@)" "HOLD(h@)" "|" "DONE(d!)" "KILL(k@)")
+  ;;    (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")))
 
   ;; Shadow the existing Capture "todo" entry. FIXME: both "t"s still show up in
   ;; the Capture templates.
@@ -315,7 +333,26 @@ This function is useful when added to the hook
   ;; Create custom agenda commands
   (setq
    org-agenda-custom-commands
-   '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1"))))
+   '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1")))
+
+  ;; Org Agenda settings
+  (setq org-agenda-start-day "-7d" ;; the starting day relative to today
+        org-agenda-span 15)        ;; the total number of days that Org Agenda displays
+
+  ;; Keep the clock open between sessions (e.g. if you want to restart Emacs)
+  ;; https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
+  (setq org-clock-persist t)
+  (org-clock-persistence-insinuate))
+
+
+;; ;; Why doesn't the `use-package!' version work?
+;; (use-package! evil-org
+;;   :general
+;;   (:keymaps 'evil-org-mode-map
+;;    "g b" #'outline-up-heading))
+(after! evil-org
+  (general-def 'motion evil-org-mode-map
+    "g b" #'outline-up-heading))
 
 ;; ;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
 ;; (use-package org-gcal
@@ -323,7 +360,7 @@ This function is useful when added to the hook
 ;;   :config
 ;;   (setq org-gcal-client-id "647603884391-2ljnnlbqocg6ub4glfod475og1atndhr.apps.googleusercontent.com"
 ;;         org-gcal-client-secret "7pTkJSrjULYw0Fx16VvPknnj"
-;;         org-gcal-file-alist '(("dpritchard@novisci.com" . "~/Documents/org/gcal-work.org"))
+;;         org-gcal-file-alist '(("dpritchard@novisci.com" . "~/Dev/org/gcal-work.org"))
 ;;         org-gcal-header-alist '(("dpritchard@novisci.com" . "#+PROPERTY: TIMELINE_FACE \"pink\"\n"))
 ;;         org-gcal-auto-archive nil
 ;;         org-gcal-notify-p nil)
@@ -348,20 +385,31 @@ This function is useful when added to the hook
    "n" 'org-mru-clock-show-narrowed
    "g" 'org-mru-clock-goto
    "s" 'org-mru-clock-select-recent-task)
-  :config
-  (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook))
+  ;; :config
+  ;; (add-hook 'minibuffer-setup-hook #'org-mru-clock-embark-minibuffer-hook)
+  )
 
-;; https://github.com/atheriel/org-clock-csv
-(use-package! org-clock-csv)
+;; ;; https://github.com/atheriel/org-clock-csv
+;; (use-package! org-clock-csv)
+(load "~/Dev/org-clock-csv/org-clock-csv.el")
+
+(defun dp-workspace-switch-config ()
+  "Switch to the org workspace and maximize gtd.org"
+  (interactive)
+  (let ((+workspaces-switch-project-function
+         (lambda (_)
+           (progn (find-file (expand-file-name "~/.doom.d/config.el"))
+                  (doom/window-maximize-buffer)))))
+    (+workspaces-switch-to-project-h (expand-file-name "~/.doom.d"))))
 
 (defun dp-workspace-switch-org ()
   "Switch to the org workspace and maximize gtd.org"
   (interactive)
   (let ((+workspaces-switch-project-function
          (lambda (_)
-           (progn (find-file (expand-file-name "~/Documents/org/gtd.org"))
+           (progn (find-file (expand-file-name "~/Dev/org/gtd.org"))
                   (doom/window-maximize-buffer)))))
-    (+workspaces-switch-to-project-h (expand-file-name "~/Documents/org"))))
+    (+workspaces-switch-to-project-h (expand-file-name "~/Dev/org"))))
 
 (defun dp-workspace-switch-pw ()
   "Switch to the pw file"
@@ -374,6 +422,7 @@ This function is useful when added to the hook
     (+workspace/rename "pw")))
 
 (general-def 'doom-leader-workspace-map
+  "c" #'dp-workspace-switch-config
   "o" #'dp-workspace-switch-org
   "p" #'dp-workspace-switch-pw)
 
@@ -395,7 +444,9 @@ This function is useful when added to the hook
 
 (use-package! evil
   :custom
-  (evil-disable-insert-state-bindings t))
+  (evil-disable-insert-state-bindings t)
+  (evil-respect-visual-line-mode t)
+  (evil-move-beyond-eol t))
 
 (use-package! avy
   :custom
@@ -422,9 +473,9 @@ This function is useful when added to the hook
   :config
   (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
-(use-package! undo-tree
-  :config
-  (global-undo-tree-mode))
+;; (use-package! undo-tree
+;;   :config
+;;   (global-undo-tree-mode))
 
 ;; ;; highlight both files and directories in treemacs based on their git status
 ;; (setq +treemacs-git-mode 'deferred)
@@ -442,7 +493,9 @@ This function is useful when added to the hook
   "M-{" #'er/expand-region
   "M-}" #'er/contract-region
   "M-O" #'er/mark-defun
-  "M-P" #'er/mark-paragraph)
+  "M-P" #'er/mark-paragraph
+  "s-o" #'er/mark-outside-pairs
+  "s-i" #'er/mark-inside-pairs)
 
 
 (use-package! smartparens
@@ -451,7 +504,7 @@ This function is useful when added to the hook
   (add-hook 'comint-mode-hook #'turn-on-smartparens-mode)
   (add-hook 'text-mode-hook #'turn-on-smartparens-mode))
 
-(use-package evil-smartparens
+(use-package! evil-smartparens
   :config
   (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)
   ;; `evil-sp-override' overwrites `exchange-point-and-mark's keybinding of "o",
@@ -521,20 +574,33 @@ This function is useful when added to the hook
       ;; (setq comint-scroll-to-bottom-on-input 'this)
       ))
 
+(general-def 'normal 'comint-mode-map
+  "RET" #'comint-send-input)
+
 
 ;; magit -----------------------------------------------------------------------
 
 (use-package! magit
+
   :general
   (:keymaps 'doom-leader-git-map
    :wk-full-keys nil
    "d" '(git-gutter:popup-diff :which-key "Popup hunk diff")
    "w" '(git-gutter:update-all-windows :which-key "Update window's gutter")
-   "W" '(git-gutter:update-all-windows :which-key "Update all window's gutters")))
+   "W" '(git-gutter:update-all-windows :which-key "Update all window's gutters"))
+
+  :config
+  ;; Don't query for confirmation when the summary line is too long
+  (delete 'overlong-summary-line git-commit-style-convention-checks))
 
 
 
 ;; ESS -------------------------------------------------------------------------
+
+(defun my-inferior-ess-init ()
+  (setq-local ansi-color-for-comint-mode 'filter)
+  (smartparens-mode 1))
+(add-hook 'inferior-ess-mode-hook 'my-inferior-ess-init)
 
 ;; TODO: see https://github.com/emacs-ess/ESS/issues/1137 for a possible config
 ;; tweak?
@@ -561,6 +627,7 @@ This function is useful when added to the hook
 
   ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
   (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
+  (add-hook 'ess-mode-hook (lambda () (setq-local ansi-color-for-comint-mode 'filter)))
 
   (general-def 'ess-mode-map
     ";" #'ess-insert-assign
@@ -584,15 +651,42 @@ This function is useful when added to the hook
 ;; Haskell ---------------------------------------------------------------------
 
 (general-def 'haskell-mode-map
-    "C-c C-s" #'haskell-interactive-bring)  ; clobbers `haskell-mode-toggle-scc-at-point'
+  "C-c C-s" #'haskell-interactive-bring)  ; clobbers `haskell-mode-toggle-scc-at-point'
 
+;; ;; TODO: why doesn't this work? It says that `haskell-hoogle' is undefined when using SPC m s
+;; (general-def 'haskell-mode-map
+;;   "C-c C-s" #'haskell-interactive-bring   ; clobbers `haskell-mode-toggle-scc-at-point'
+;;   "SPC m s" #'haskell-hoogle)
+
+; with regards to `turn-off-smartparens-strict-mode': for some reason the `-'
+; character gets read as a delimiter so that pressing `-' causes an error. It
+; would be nice to fix the root of this issue rather than using this workaround
+;
+; subword-mode makes word boundaries appear within camel-case words. See
+; https://www.gnu.org/software/emacs/manual/html_node/emacs/MixedCase-Words.html
+(after! haskell
+  (add-hook 'haskell-mode-hook #'subword-mode)
+  (add-hook 'haskell-mode-hook #'turn-off-smartparens-strict-mode)
+  (load! "lisp/utils/stack-workaround.el"))
 
 
 ;; Dhall -----------------------------------------------------------------------
 
+;; https://docs.dhall-lang.org/howtos/Text-Editor-Configuration.html#emacs
 (use-package! dhall-mode
-  :ensure t
-  :mode "\\.dhall\\'")
+  :hook (dhall-mode . lsp)
+  :config
+  (setq dhall-use-header-line nil))
+
+;; (after! dhall
+;;   (setq dhall-format-at-save nil))
+
+
+;; AsciiDoc --------------------------------------------------------------------
+
+(add-hook! adoc-mode
+  (add-to-list 'auto-mode-alist '("\\.adoc" . adoc-mode))
+  (flyspell-mode t))
 
 
 ;; nicer `open-line' ----------------------------------------------------------
@@ -609,21 +703,68 @@ This function is useful when added to the hook
 
 ;; Python ---------------------------------------------------------------------
 
-(setq lsp-pyright-venv-path (expand-file-name "~/.virtualenvs")
+(setq lsp-pyright-venv-path (expand-file-name "~/.virtualenv")
       lsp-pyright-python-executable-cmd "python3")
 
-;; Add the `env' directory to the list of directories to ignore for the LSP
-;; client under the assumption/convention that this is where virtual
-;; environments will be stored
-(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]env\\'")
+(use-package! lsp-mode
+  ;; :general
+  ;; ('
+  ;;  "a" 'org-mru-clock-add-note
+  ;;  "h" 'org-mru-clock-to-history
+  ;;  "i" 'org-mru-clock-in
+  ;;  "n" 'org-mru-clock-show-narrowed
+  ;;  "g" 'org-mru-clock-goto
+  ;;  "s" 'org-mru-clock-select-recent-task)
+  :config
+  ;; Add the `env' directory to the list of directories to ignore for the LSP
+  ;; client under the assumption/convention that this is where virtual
+  ;; environments will be stored in my Python projects
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]venv\\'"))
 
+;; (use-package! lsp-ui
+;;   :config
+;;   (general-def 'normal "'" lsp-ui-mode-map)
+;;   (general-def 'lsp-ui-mode-map
+;;     "c" #'dp-lsp-ui-doc-toggle-show-with-cursor
+;;     "e" #'flycheck-list-errors
+;;     "g" #'lsp-ui-doc-glance
+;;     "G" #'lsp-ui-doc-show
+;;     "m" #'dp-lsp-ui-doc-toggle-show-with-mouse
+;;     "s" #'lsp-ui-sideline-toggle-symbols-info))
+
+(defun dp-lsp-ui-doc-toggle-show-with-cursor ()
+  "Toggle the value of `lsp-ui-doc-show-with-cursor'"
+  (interactive)
+  (if lsp-ui-doc-show-with-cursor
+      (setq lsp-ui-doc-show-with-cursor nil)
+    (setq lsp-ui-doc-show-with-cursor t)))
+
+(defun dp-lsp-ui-doc-toggle-show-with-mouse ()
+  "Toggle the value of `lsp-ui-doc-show-with-mouse'"
+  (interactive)
+  (if lsp-ui-doc-show-with-mouse
+      (setq lsp-ui-doc-show-with-mouse nil)
+    (setq lsp-ui-doc-show-with-mouse t)))
+
+;; https://github.com/emacs-lsp/lsp-mode/issues/3390
 ;; https://emacs.stackexchange.com/questions/13489/how-do-i-get-emacs-to-recognize-my-python-3-virtual-environment
+;; https://www.reddit.com/r/emacs/comments/ejc1az/comment/fcwz0gk/?utm_source=share&utm_medium=web2x&context=3
 (use-package! pyvenv
   :config
   (pyvenv-mode 1))
 
 
-;; uncollected functions ------------------------------------------------------
+;; shell -----------------------------------------------------------------------
+
+;; Turn off automatic company completion in shell mode buffers (note that you
+;; can still use `C-SPC' to manually invoke a completion). In sh-mode company
+;; tries to find a completion by looking up all of the available shell commands
+;; on $PATH which sometimes locks up Emacs for 5 or 10 seconds at a time (and is
+;; hardly ever very useful)
+(add-hook 'sh-mode-hook (lambda () (setq-local company-idle-delay nil)))
+
+
+;; uncollected functions -------------------------------------------------------
 
 (defun whitespace-cleanup-force ()
   "Like `whitespace-cleanup', but always cleans everything.
@@ -655,3 +796,42 @@ zap it."
 (load! "lisp/utils/align-regexp-variants.el")
 (general-def '(normal visual)
   "+" #'align-regexp-=)
+
+(defun fill-by-sentence ()
+  "Fills the current paragraph, but starts each sentence on a new line."
+  (interactive)
+  (save-excursion
+    ;; Select the entire paragraph
+    (mark-paragraph)
+    ;; Move to the start of the paragraph
+    (goto-char (region-beginning))
+    ;; Record the location of the end of the paragraph
+    (let ((end-of-paragraph (copy-marker (region-end))))
+      ;; Loop over each sentence in the paragraph
+      (forward-sentence)
+      ;;
+      (while (and (< (point) end-of-paragraph) (not (equal (following-char) ?\n)))
+        ;; Check that we don't have an instance of one of the following known
+        ;; false positive sentence endings
+        (unless (let* ((prev-line-str (buffer-substring (save-excursion (beginning-of-line) (point))
+                                                       (point)))
+                      (next-line-str (buffer-substring (point)
+                                                       (save-excursion (end-of-line) (point)))))
+                  (or (string-match-p "e\\.g\\.$" prev-line-str)
+                      (string-match-p "i\\.e\\.$" prev-line-str)
+                      (string-match-p "c\\.f\\.$" prev-line-str)
+                      (and (string-match-p "etc\\.$" prev-line-str)
+                           (string-match-p "[[:blank:]]*[^[:upper:]]" next-line-str))))
+          (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+          (insert "\n"))
+        (forward-sentence))))
+  (pop-mark))
+
+;; from https://gist.github.com/kristianhellquist/3082383?permalink_comment_id=2373734#gistcomment-2373734
+(defun copy-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))

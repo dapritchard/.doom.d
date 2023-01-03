@@ -49,18 +49,20 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+(package! ivy :built-in 'prefer)  ;; org-mru-clock seems to rely on this
 ;; (unpin! ess)
-;; (package! ESS
-;;   :recipe (:local-repo "ess" :branch "master"))
-(package! ess
-  :recipe (:local-repo "ess" :branch "master" :host github :repo "dapritchard/ESS"))
-;; (package! ESS
-;;   :recipe (:local-repo "ess" :branch "modify-package-info-to-return-remote-path"))
-(package! dhall-mode)
-(package! org-gcal
-  :recipe (:host github :repo "kidd/org-gcal.el"))
+;; (package! ess
+;;   :recipe (:local-repo "ess" :branch "master" :host github :repo "dapritchard/ESS"))
+;; (package! org-gcal
+;;   :recipe (:host github :repo "kidd/org-gcal.el"))
 (package! evil-smartparens)
 (package! org-mru-clock)
-(package! org-clock-csv)
+;; (package! org-clock-csv)
 (package! deadgrep)
 (package! adoc-mode)
+;; FIXME we don't need both of these, right?
+(package! another-package
+ :recipe (:host github :repo "emacsorphanage/transpose-frame"))
+(package! transpose-frame
+ :recipe (:host github :repo "emacsorphanage/transpose-frame"
+          :files ("transpose-frame.el")))
