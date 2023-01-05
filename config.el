@@ -328,7 +328,7 @@ This function is useful when added to the hook
   (add-to-list 'org-capture-templates
                '("t" "Personal todo" entry
                  (file+headline +org-capture-todo-file "Inbox")
-                 "* %?\n\n%a" :prepend t))
+                 "* %?\n%a Entered on %U" :prepend t))
 
   ;; Create custom agenda commands
   (setq
@@ -392,6 +392,11 @@ This function is useful when added to the hook
 ;; ;; https://github.com/atheriel/org-clock-csv
 ;; (use-package! org-clock-csv)
 (load "~/Dev/org-clock-csv/org-clock-csv.el")
+
+(setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
+
+
+;; switch workspace shortcuts --------------------------------------------------
 
 (defun dp-workspace-switch-config ()
   "Switch to the org workspace and maximize gtd.org"
