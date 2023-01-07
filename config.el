@@ -395,6 +395,8 @@ This function is useful when added to the hook
 
 (setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
 
+(load! "lisp/org-effort/org-effort.el")
+
 
 ;; switch workspace shortcuts --------------------------------------------------
 
