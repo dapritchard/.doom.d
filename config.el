@@ -600,6 +600,10 @@ This function is useful when added to the hook
   ;; Don't query for confirmation when the summary line is too long
   (delete 'overlong-summary-line git-commit-style-convention-checks))
 
+;; A guide for setting up forge:
+;; https://gist.github.com/Azeirah/542f1db12e3ef904abfc7e9c2e83310e
+(after! auth-source
+  (setq auth-sources '("~/.authinfo")))
 
 
 ;; ESS -------------------------------------------------------------------------
