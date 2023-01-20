@@ -396,6 +396,8 @@ This function is useful when added to the hook
 (setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
 
 (load! "lisp/org-effort/org-effort.el")
+(general-def 'motion org-mode-map
+    "SPC m m" #'dp-org-set-effort)
 
 
 ;; switch workspace shortcuts --------------------------------------------------
@@ -655,8 +657,7 @@ This function is useful when added to the hook
     "C-S-m" (lambda () (interactive) (insert " %>% ")))
 
   ;; (load! "lisp/ess+/ess-history.el")
-  (load! "lisp/ess+/ess-utils.el")
-  )
+  (load! "lisp/ess+/ess-utils.el"))
 
 
 ;; Haskell ---------------------------------------------------------------------
