@@ -4,7 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
-   '((haskell-process-args-cabal-repl "hasklepias-core")
+   '((haskell-process-args-cabal-repl "--ghc-option=-ferror-spans" "fact-models")
+     (haskell-process-args-cabal-repl "--ghc-option=-ferror-spans" "fact-models-test")
+     (haskell-process-args-cabal-repl "hasklepias-core")
      (haskell-process-args-stack-ghci "validating-ciphers")
      (haskell-process-args-stack-ghci ":validating-ciphers")
      (haskell-process-args-stack-ghci ":ciphers-test")

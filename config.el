@@ -809,6 +809,8 @@ zap it."
 (general-def '(normal visual)
   "+" #'align-regexp-=)
 
+(load! "lisp/occur-non-ascii/occur-non-ascii.el")
+
 (defun fill-by-sentence ()
   "Fills the current paragraph, but starts each sentence on a new line."
   (interactive)
