@@ -285,6 +285,11 @@ This function is useful when added to the hook
 ;; ;; (setq org-agenda-span 10)
 ;; ;; (setq org-agenda-span 5)
 
+(add-to-list 'org-capture-templates
+               '("t" "Personal todo" entry
+                 (file+headline +org-capture-todo-file "Inbox")
+                 "* %?\n%a Entered on %U" :prepend t))
+
 (use-package! org
 
   :custom
@@ -333,10 +338,38 @@ This function is useful when added to the hook
                  (file+headline +org-capture-todo-file "Inbox")
                  "* %?\n%a Entered on %U" :prepend t))
 
-  ;; Create custom agenda commands
-  (setq
-   org-agenda-custom-commands
-   '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1")))
+  ;; ;; Create custom agenda commands
+  ;; (setq
+  ;;  org-agenda-custom-commands
+  ;;  '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1")))
+
+  ;; See https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+  ;; for an overview of custom agenda commands and
+  ;; https://orgmode.org/manual/Custom-Agenda-Views.html for the corresponding Org
+  ;; documentation, but really the `org-agenda-custom-commands' docstring provides
+  ;; better information than either of the previously mentioned sources.
+  (setq org-agenda-custom-commands
+        '(("g" "Get Things Done (GTD)"
+           ((todo "STRT"
+                  ((org-agenda-skip-function
+                    '(org-agenda-skip-entry-if 'deadline))
+                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                   (org-agenda-overriding-header "\nTasks\n")))
+            (agenda nil
+                    ((org-agenda-entry-types '(:deadline))
+                     (org-agenda-format-date "")
+                     (org-deadline-warning-days 365)
+                     ;; (org-agenda-skip-function
+                     ;;  '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))
+                     (org-agenda-overriding-header "\nDeadlines")))
+            (tags-todo "inbox"
+                       ((org-agenda-prefix-format "  %?-12t% s")
+                        (org-agenda-overriding-header "\nInbox\n")))
+            (todo "TODO"
+                  (;; (org-agenda-skip-function
+                   ;;  '(org-agenda-skip-entry-if 'deadline))
+                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                   (org-agenda-overriding-header "\nTasks\n")))))))
 
   ;; Org Agenda settings
   (setq org-agenda-start-day "-7d" ;; the starting day relative to today
