@@ -66,3 +66,5 @@
 (package! transpose-frame
  :recipe (:host github :repo "emacsorphanage/transpose-frame"
           :files ("transpose-frame.el")))
+(package! chatgpt-shell
+   :recipe (:host github :repo "xenodium/chatgpt-shell"))

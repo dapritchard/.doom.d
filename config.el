@@ -285,10 +285,10 @@ This function is useful when added to the hook
 ;; ;; (setq org-agenda-span 10)
 ;; ;; (setq org-agenda-span 5)
 
-(add-to-list 'org-capture-templates
-               '("t" "Personal todo" entry
-                 (file+headline +org-capture-todo-file "Inbox")
-                 "* %?\n%a Entered on %U" :prepend t))
+;; (add-to-list 'org-capture-templates
+;;                '("t" "Personal todo" entry
+;;                  (file+headline +org-capture-todo-file "Inbox")
+;;                  "* %?\n%a Entered on %U" :prepend t))
 
 (use-package! org
 
@@ -810,6 +810,15 @@ This function is useful when added to the hook
 ;; on $PATH which sometimes locks up Emacs for 5 or 10 seconds at a time (and is
 ;; hardly ever very useful)
 (add-hook 'sh-mode-hook (lambda () (setq-local company-idle-delay nil)))
+
+
+;; chatgpt-shell ---------------------------------------------------------------
+
+(use-package! chatgpt-shell
+  :config
+  (setq chatgpt-shell-openai-key
+        (lambda ()
+          (auth-source-pick-first-password :host "api.openai.com"))))
 
 
 ;; uncollected functions -------------------------------------------------------
