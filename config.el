@@ -429,7 +429,9 @@ This function is useful when added to the hook
 ;; (use-package! org-clock-csv)
 (load "~/Dev/org-clock-csv/org-clock-csv.el")
 
-(setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
+(after! org
+  (setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
+  (org-roam-db-autosync-mode))
 
 (load! "lisp/org-effort/org-effort.el")
 (general-def 'motion org-mode-map
