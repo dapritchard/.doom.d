@@ -338,38 +338,43 @@ This function is useful when added to the hook
                  (file+headline +org-capture-todo-file "Inbox")
                  "* %?\n%a Entered on %U" :prepend t))
 
-  ;; ;; Create custom agenda commands
-  ;; (setq
-  ;;  org-agenda-custom-commands
-  ;;  '(("p" "Work projects" tags "@work+TODO=\"PROJ\"+LEVEL=1")))
-
-  ;; See https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
-  ;; for an overview of custom agenda commands and
-  ;; https://orgmode.org/manual/Custom-Agenda-Views.html for the corresponding Org
-  ;; documentation, but really the `org-agenda-custom-commands' docstring provides
-  ;; better information than either of the previously mentioned sources.
+  ;; For an overview of custom agenda commands see
+  ;; https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html and
+  ;; https://orgmode.org/manual/Custom-Agenda-Views.html, but really the
+  ;; `org-agenda-custom-commands' docstring provides better information than
+  ;; either of the previously mentioned sources. Also see
+  ;; https://github.com/rougier/emacs-gtd#agenda-setup-ii for the example this
+  ;; definition was baed on
   (setq org-agenda-custom-commands
-        '(("g" "Get Things Done (GTD)"
+        '(("g" "Getting Things Done (GTD)"
+           ;; 'type' (composite agenda) section
            ((todo "STRT"
-                  ((org-agenda-skip-function
-                    '(org-agenda-skip-entry-if 'deadline))
-                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
-                   (org-agenda-overriding-header "\nTasks\n")))
+                  (;; (org-agenda-skip-function
+                   ;;  '(org-agenda-skip-entry-if 'deadline))
+                   ;; (org-agenda-prefix-format "  %-12:c [%e] ")
+                   (org-agenda-overriding-header "In progress\n")
+                   (org-agenda-over)))
             (agenda nil
                     ((org-agenda-entry-types '(:deadline))
-                     (org-agenda-format-date "")
+                     ;; (org-agenda-format-date "")
                      (org-deadline-warning-days 365)
-                     ;; (org-agenda-skip-function
-                     ;;  '(org-agenda-skip-entry-if 'notregexp "\\* NEXT"))
-                     (org-agenda-overriding-header "\nDeadlines")))
+                     (org-agenda-show-all-dates nil)
+                     (org-agenda-time-grid nil)
+                     (org-agenda-skip-deadline-if-done t)
+                     ;; (org-agenda-include-deadlines nil)
+                     (org-agenda-overriding-header "\nDeadlines\n")))
             (tags-todo "inbox"
                        ((org-agenda-prefix-format "  %?-12t% s")
                         (org-agenda-overriding-header "\nInbox\n")))
             (todo "TODO"
                   (;; (org-agenda-skip-function
                    ;;  '(org-agenda-skip-entry-if 'deadline))
-                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
-                   (org-agenda-overriding-header "\nTasks\n")))))))
+                   ;; (org-agenda-prefix-format "  %?-12:c [%e] ")
+                   (org-agenda-overriding-header "\nTasks\n"))))
+           ;; 'match' section
+           ((org-agenda-tag-filter-preset '("-@dev"))
+            (org-agenda-prefix-format "  %?-12t% s")
+            ))))
 
   ;; Org Agenda settings
   (setq org-agenda-start-day "-7d" ;; the starting day relative to today
