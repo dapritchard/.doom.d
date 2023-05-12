@@ -821,11 +821,11 @@ This function is useful when added to the hook
 
 ;; chatgpt-shell ---------------------------------------------------------------
 
-;; (use-package! chatgpt-shell
-;;   :config
-;;   (setq chatgpt-shell-openai-key
-;;         (lambda ()
-;;           (auth-source-pick-first-password :host "api.openai.com"))))
+(use-package! chatgpt-shell
+  :config
+  (setq chatgpt-shell-openai-key
+        (lambda ()
+          (auth-source-pick-first-password :host "api.openai.com"))))
 
 
 ;; uncollected functions -------------------------------------------------------

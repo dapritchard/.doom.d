@@ -66,5 +66,8 @@
 (package! transpose-frame
  :recipe (:host github :repo "emacsorphanage/transpose-frame"
           :files ("transpose-frame.el")))
-;; (package! chatgpt-shell
-;;    :recipe (:host github :repo "xenodium/chatgpt-shell"))
+(package! shell-maker
+  :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("shell-maker.el")))
+;; TODO: How to specify that this requires shell-maker?
+(package! chatgpt-shell
+  :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell.el")))
