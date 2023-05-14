@@ -96,7 +96,8 @@
 (general-def '(normal motion)
   "8" #'basic-save-buffer
   "9" #'evil-beginning-of-visual-line
-  "0" #'evil-last-non-blank)
+  "0" #'evil-last-non-blank
+  "-" #'kill-current-buffer)
 
 ;; ;; TAB is bound to `better-jumper-jump-forward', which is also bound to "C-i",
 ;; ;; so let's make it perform indentation since that is what I'm used to from
