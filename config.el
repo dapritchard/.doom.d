@@ -312,6 +312,13 @@ This function is useful when added to the hook
   ;; Specify which files are used for agenda display
   (org-agenda-files '("gtd.org" "inbox.org"))
 
+  ;; Specify what directory Org attach stores files to
+  (org-attach-id-dir (expand-file-name "~/data/org-attach"))
+
+  ;; Record a link to the attached file in `org-stored-links' (default is a link
+  ;; to the original file location)
+  (org-attach-store-link-p 'file)
+
   :config
 
   ;; Add keybindings. Why did I use `map!' here rather than a 'general' command
