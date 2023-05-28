@@ -309,7 +309,8 @@ This function is useful when added to the hook
   ;; Show only entries that have received clocked time on that day.
   (org-agenda-log-mode-items '(clock))
 
-  ;; Specify which files are used for agenda display
+  ;; Specify which files are used for agenda display. These are relative to
+  ;; `org-directory'
   (org-agenda-files '("gtd.org" "inbox.org"))
 
   ;; Specify what directory Org attach stores files to
