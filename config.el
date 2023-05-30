@@ -311,7 +311,7 @@ This function is useful when added to the hook
 
   ;; Specify which files are used for agenda display. These are relative to
   ;; `org-directory'
-  (org-agenda-files '("gtd.org" "inbox.org"))
+  (org-agenda-files '("gtd.org" "inbox.org" "knowledgebase.org"))
 
   ;; Specify what directory Org attach stores files to
   (org-attach-id-dir (expand-file-name "~/data/org-attach"))
@@ -382,8 +382,11 @@ This function is useful when added to the hook
                    (org-agenda-overriding-header "\nTasks\n"))))
            ;; 'match' section
            ((org-agenda-tag-filter-preset '("-@dev"))
-            (org-agenda-prefix-format "  %?-12t% s")
-            ))))
+            (org-agenda-prefix-format "  %?-12t% s")))
+          ("f"
+           "File store"
+           tags
+           "knowledgebase")))
 
   ;; Org Agenda settings
   (setq org-agenda-start-day "-7d" ;; the starting day relative to today
