@@ -320,6 +320,9 @@ This function is useful when added to the hook
   ;; to the original file location)
   (org-attach-store-link-p 'file)
 
+  ;; Prevent Org from clocking out when the clocked entry is marked as DONE
+  (org-clock-out-when-done nil)
+
   :config
 
   ;; Add keybindings. Why did I use `map!' here rather than a 'general' command
