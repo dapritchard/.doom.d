@@ -323,6 +323,10 @@ This function is useful when added to the hook
   ;; Prevent Org from clocking out when the clocked entry is marked as DONE
   (org-clock-out-when-done nil)
 
+  ;; The length at which the web page title that is extracted by `org-cliplink'
+  ;; is truncated
+  (org-cliplink-max-length 200)
+
   :config
 
   ;; Add keybindings. Why did I use `map!' here rather than a 'general' command
