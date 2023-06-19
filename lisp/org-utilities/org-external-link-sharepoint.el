@@ -16,6 +16,12 @@
                               sharepoint-path)))
     (insert link-string)))
 
+(defun dp-push-sharepointpath-to-clip ()
+  "Place the Sharepoint path from a SharePoint URL string in the kill ring."
+  (interactive)
+  (let ((sharepoint-path (dp-extract-sharepointpath-from-url url-string)))
+    (kill-new sharepoint-path)))
+
 ;; TODO: extract `prefix' as a customizeable parameter
 ;; TODO: throw error if the `:type' returned by `url-generic-parse-url' isn't
 ;; ="https"=?
