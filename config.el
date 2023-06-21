@@ -53,6 +53,9 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+
+;; Begin personal customizations -----------------------------------------------
+
 ;; swap the location of the meta and super keys
 (setq mac-command-modifier 'meta
       mac-option-modifier 'super
@@ -73,6 +76,14 @@
 ;; https://www.reddit.com/r/emacs/comments/i4uh6w/emacs_hanging_on_osx/
 (after! which-key
   (setq which-key-allow-imprecise-window-fit t))
+
+;; This advice inserts a comment when hitting RET or "o", etc., which is the
+;; default vim behavior. However, on average I find that behavior to be more
+;; annoying than helpful so I turn it off
+(advice-remove 'newline-and-indent
+               #'+default--newline-indent-and-continue-comments-a)
+(advice-remove 'evil-open-below
+               #'+evil--insert-newline-below-and-respect-comments-a)
 
 
 ;; load config files -----------------------------------------------------------
