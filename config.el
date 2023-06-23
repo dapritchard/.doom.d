@@ -796,7 +796,18 @@ This function is useful when added to the hook
 ;; Python ---------------------------------------------------------------------
 
 (setq lsp-pyright-venv-path (expand-file-name "~/.virtualenv")
-      lsp-pyright-python-executable-cmd "python3")
+      lsp-pyright-python-executable-cmd "python3"
+      python-fill-docstring-style 'pep-257-nn)
+
+;; https://github.com/emacs-lsp/lsp-mode/issues/3390
+;; https://emacs.stackexchange.com/questions/13489/how-do-i-get-emacs-to-recognize-my-python-3-virtual-environment
+;; https://www.reddit.com/r/emacs/comments/ejc1az/comment/fcwz0gk/?utm_source=share&utm_medium=web2x&context=3
+(use-package! pyvenv
+  :config
+  (pyvenv-mode 1))
+
+
+;; LSP -------------------------------------------------------------------------
 
 (use-package! lsp-mode
   ;; :general
@@ -837,13 +848,6 @@ This function is useful when added to the hook
   (if lsp-ui-doc-show-with-mouse
       (setq lsp-ui-doc-show-with-mouse nil)
     (setq lsp-ui-doc-show-with-mouse t)))
-
-;; https://github.com/emacs-lsp/lsp-mode/issues/3390
-;; https://emacs.stackexchange.com/questions/13489/how-do-i-get-emacs-to-recognize-my-python-3-virtual-environment
-;; https://www.reddit.com/r/emacs/comments/ejc1az/comment/fcwz0gk/?utm_source=share&utm_medium=web2x&context=3
-(use-package! pyvenv
-  :config
-  (pyvenv-mode 1))
 
 
 ;; shell -----------------------------------------------------------------------
