@@ -479,6 +479,14 @@ This function is useful when added to the hook
 (general-def 'motion org-mode-map
     "SPC m m" #'dp-org-set-effort)
 
+(defun dp-popup-knowledgebase ()
+  "Open 'knowledgebase' in a popup buffer"
+  (interactive)
+  (+popup-buffer (get-buffer "20230619210159-knowledgebase.org")))
+(general-def 'doom-leader-notes-map
+  "k" #'dp-popup-knowledgebase)
+
+
 
 ;; switch workspace shortcuts --------------------------------------------------
 
