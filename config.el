@@ -161,6 +161,9 @@
 ;; (general-def 'normal dired-mode-map
 ;;   "o" #'dired-find-file-other-window)
 
+(after! dired
+  (general-unbind 'normal 'dired-mode-map
+    "-"))
 
 ;; Info -----------------------------------------------------------------------
 
