@@ -510,6 +510,10 @@ This function is useful when added to the hook
 (general-def 'doom-leader-notes-map
   "K" #'dp-popup-knowledgebase)
 
+(defun dp-org-set-property-id ()
+  "Creates a new Org ID and sets the corresponding property"
+  (interactive)
+  (org-set-property "ID" (org-id-get-create)))
 
 
 ;; switch workspace shortcuts --------------------------------------------------
