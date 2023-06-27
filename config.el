@@ -425,6 +425,27 @@ This function is useful when added to the hook
   (setq org-clock-persist t)
   (org-clock-persistence-insinuate))
 
+;; HACK: I simply want to list all headlines in 20230619210159-knowledgebase.org
+;; but I couldn't figure out how to do it without adding a tag to everything and
+;; then filtering on the tag
+(setq dp-agenda-custom-commands-knowledgebase
+      '(("f"
+         "File store"
+         tags
+         "knowledgebase"
+         ((org-agenda-prefix-format "  ")
+          (org-agenda-sorting-strategy '(alpha-up))))))
+(defun dp-agenda-knowledgebase ()
+  "Open the knowledgebase agenda"
+  (interactive)
+  (let* ((knowledgebase-path (file-name-concat org-roam-directory
+                                               "20230619210159-knowledgebase.org"))
+         (org-agenda-files (list knowledgebase-path))
+         (org-agenda-custom-commands dp-agenda-custom-commands-knowledgebase))
+    (org-agenda nil "f")))
+(general-def 'doom-leader-notes-map
+  "k" #'dp-agenda-knowledgebase)
+
 
 ;; ;; Why doesn't the `use-package!' version work?
 ;; (use-package! evil-org
@@ -487,7 +508,7 @@ This function is useful when added to the hook
   (interactive)
   (+popup-buffer (get-buffer "20230619210159-knowledgebase.org")))
 (general-def 'doom-leader-notes-map
-  "k" #'dp-popup-knowledgebase)
+  "K" #'dp-popup-knowledgebase)
 
 
 
