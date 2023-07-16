@@ -31,3 +31,23 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
   (let* ((link-re "\\[\\[.+\\]\\[.+\\]\\]")
          (is-link (string-match link-re s)))
     is-link))
+
+;; This code is based on `org-agenda-switch-to'
+(defun dp-org-agenda-knowledgebase-open-or-follow-link ()
+  "Run `agenda-knowledgebase-open-or-follow-link' from an agenda item"
+  (interactive)
+  (if (and org-return-follows-link
+           (not (org-get-at-bol 'org-marker))
+           (org-in-regexp org-link-bracket-re))
+      ;; FIXME: what should be done for this codepath?
+      ;; (org-link-open-from-string (match-string 0))
+      (error "Not yet implemented")
+    (let* ((marker (or (org-get-at-bol 'org-marker)
+                       (org-agenda-error)))
+           (buffer (marker-buffer marker))
+           (pos (marker-position marker)))
+      (unless buffer (user-error "Trying to switch to non-existent buffer"))
+      (with-current-buffer buffer
+        (goto-char pos)
+        (dp-knowledgebase-open-or-follow-link))
+      (org-agenda-quit))))
