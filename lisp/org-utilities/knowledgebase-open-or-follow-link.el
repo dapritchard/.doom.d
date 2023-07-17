@@ -1,6 +1,6 @@
 ;;; lisp/org-utilities/org-agenda-knowledgebase-open.el -*- lexical-binding: t; -*-
 
-(defun dp-knowledgebase-open-or-follow-link ()
+(defun dp-knowledgebase-open ()
   "Open the Org Attach attachment or follow the 'URL' property link
 
 First check whether the current Org headline has an Org Attach
@@ -33,8 +33,8 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
     is-link))
 
 ;; This code is based on `org-agenda-switch-to'
-(defun dp-org-agenda-knowledgebase-open-or-follow-link ()
-  "Run `agenda-knowledgebase-open-or-follow-link' from an agenda item"
+(defun dp-org-agenda-knowledgebase-open ()
+  "Run `agenda-knowledgebase-open' from an agenda item"
   (interactive)
   (if (and org-return-follows-link
            (not (org-get-at-bol 'org-marker))
@@ -51,3 +51,10 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
         (goto-char pos)
         (dp-knowledgebase-open-or-follow-link))
       (org-agenda-quit))))
+
+(defun dp-keybinding-org-agenda-knowledgebase-open ()
+  (interactive)
+  (general-define-key
+   :states 'normal
+   :keymaps 'local
+   "RET" #'dp-org-agenda-knowledgebase-open))

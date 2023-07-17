@@ -4,7 +4,21 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
-   '((haskell-process-args-cabal-repl "--ghc-option=-ferror-spans" "fact-models")
+   '((elisp-lint-indent-specs
+      (describe . 1)
+      (it . 1)
+      (thread-first . 0)
+      (cl-flet . 1)
+      (cl-flet* . 1)
+      (org-element-map . defun)
+      (org-roam-dolist-with-progress . 2)
+      (org-roam-with-temp-buffer . 1)
+      (org-with-point-at . 1)
+      (magit-insert-section . defun)
+      (magit-section-case . 0)
+      (org-roam-with-file . 2))
+     (elisp-lint-ignored-validators "byte-compile" "package-lint")
+     (haskell-process-args-cabal-repl "--ghc-option=-ferror-spans" "fact-models")
      (haskell-process-args-cabal-repl "--ghc-option=-ferror-spans" "fact-models-test")
      (haskell-process-args-cabal-repl "hasklepias-core")
      (haskell-process-args-stack-ghci "validating-ciphers")
