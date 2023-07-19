@@ -345,6 +345,7 @@ This function is useful when added to the hook
 
   ;; Add keybindings. Why did I use `map!' here rather than a 'general' command
   ;; like I usually do?
+  ;; FIXME: this doesn't work?
   (map! :after org-agenda
         :map org-agenda-mode-map
         :localleader
@@ -423,7 +424,9 @@ This function is useful when added to the hook
   ;; Keep the clock open between sessions (e.g. if you want to restart Emacs)
   ;; https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
   (setq org-clock-persist t)
-  (org-clock-persistence-insinuate))
+  (org-clock-persistence-insinuate)
+
+  (load! "lisp/org-utilities/knowledgebase-open.el"))
 
 ;; HACK: I simply want to list all headlines in 20230619210159-knowledgebase.org
 ;; but I couldn't figure out how to do it without adding a tag to everything and
