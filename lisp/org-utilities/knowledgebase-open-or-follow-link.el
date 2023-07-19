@@ -49,12 +49,13 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
       (unless buffer (user-error "Trying to switch to non-existent buffer"))
       (with-current-buffer buffer
         (goto-char pos)
-        (dp-knowledgebase-open-or-follow-link))
+        (dp-knowledgebase-open))
       (org-agenda-quit))))
 
-(defun dp-keybinding-org-agenda-knowledgebase-open ()
-  (interactive)
+(defun dp-define-key-org-agenda-knowledgebase-open ()
   (general-define-key
-   :states 'normal
+   :states 'motion
    :keymaps 'local
-   "RET" #'dp-org-agenda-knowledgebase-open))
+   "<return>" #'dp-org-agenda-knowledgebase-open))
+
+(add-hook 'org-agenda-mode-hook #'dp-define-key-org-agenda-knowledgebase-open)
