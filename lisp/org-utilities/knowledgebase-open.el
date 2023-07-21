@@ -57,5 +57,3 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
    :states 'motion
    :keymaps 'local
    "<return>" #'dp-org-agenda-knowledgebase-open))
-
-(add-hook 'org-agenda-mode-hook #'dp-define-key-org-agenda-knowledgebase-open)

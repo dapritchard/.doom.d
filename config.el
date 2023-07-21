@@ -428,9 +428,6 @@ This function is useful when added to the hook
 
   (load! "lisp/org-utilities/knowledgebase-open.el"))
 
-;; HACK: I simply want to list all headlines in 20230619210159-knowledgebase.org
-;; but I couldn't figure out how to do it without adding a tag to everything and
-;; then filtering on the tag
 (setq dp-agenda-custom-commands-knowledgebase
       '(("f"
          "File store"
@@ -445,7 +442,8 @@ This function is useful when added to the hook
                                                "20230619210159-knowledgebase.org"))
          (org-agenda-files (list knowledgebase-path))
          (org-agenda-custom-commands dp-agenda-custom-commands-knowledgebase))
-    (org-agenda nil "f")))
+    (org-agenda nil "f")
+    (dp-define-key-org-agenda-knowledgebase-open)))
 (general-def 'doom-leader-notes-map
   "k" #'dp-agenda-knowledgebase)
 
