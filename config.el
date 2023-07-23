@@ -325,7 +325,7 @@ This function is useful when added to the hook
 
   ;; Specify which files are used for agenda display. These are relative to
   ;; `org-directory'
-  (org-agenda-files '("gtd.org" "inbox.org" "knowledgebase.org"))
+  (org-agenda-files '("gtd.org" "inbox.org"))
 
   ;; Specify what directory Org attach stores files to
   (org-attach-id-dir (expand-file-name "~/data/org-attach"))
