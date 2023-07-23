@@ -37,3 +37,10 @@ value in the `counsel-outline-settings' plist, and that typically
 gets used by `counsel-outline-candidates'."
   (goto-char (cdr candidate))
   (dp-org-agenda-knowledgebase-open))
+
+(defun dp-define-key-counsel-knowledgebase-open ()
+  "Overrides the `delete-other-windows'"
+  (general-define-key
+   :states 'motion
+   :keymaps 'local
+   "o" #'dp-counsel-knowledgebase-open))
