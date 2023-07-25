@@ -516,6 +516,9 @@ This function is useful when added to the hook
 (general-def 'doom-leader-notes-map
   "K" #'dp-popup-knowledgebase)
 
+(general-def 'doom-leader-open-map
+  "k" #'dp-knowledgebase-read)
+
 (defun dp-org-set-property-id ()
   "Creates a new Org ID and sets the corresponding property"
   (interactive)

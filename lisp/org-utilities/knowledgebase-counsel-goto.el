@@ -44,3 +44,15 @@ gets used by `counsel-outline-candidates'."
    :states 'motion
    :keymaps 'local
    "o" #'dp-counsel-knowledgebase-open))
+
+(defun dp-knowledgebase-read ()
+  "Search the knowledgebase"
+  (interactive)
+  (let* ((knowledgebase-path (file-name-concat org-roam-directory
+                                               "20230619210159-knowledgebase.org"))
+         (org-agenda-files (list knowledgebase-path))
+         (org-agenda-custom-commands dp-agenda-custom-commands-knowledgebase))
+    (save-window-excursion
+      (org-agenda nil "f"))
+    (with-current-buffer "*Org Agenda*"
+        (dp-counsel-knowledgebase-open))))
