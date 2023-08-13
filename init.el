@@ -44,7 +44,7 @@
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
+       (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
@@ -170,8 +170,9 @@
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        (scheme
-        +mit
-        +guile)          ; a fully conniving family of lisps
+        ;; +mit
+        ;; +guile   ;; I'm getting an error `void-function geiser-activate-implementation'
+        )          ; a fully conniving family of lisps
        sh                ; she sells {ba,z,fi}sh shells on the C xor
        sml
        ;;solidity          ; do you need a blockchain? No.
