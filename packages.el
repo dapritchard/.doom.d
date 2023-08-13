@@ -61,8 +61,6 @@
 (package! deadgrep)
 (package! adoc-mode)
 ;; FIXME we don't need both of these, right?
-(package! another-package
- :recipe (:host github :repo "emacsorphanage/transpose-frame"))
 (package! transpose-frame
  :recipe (:host github :repo "emacsorphanage/transpose-frame"
           :files ("transpose-frame.el")))
@@ -71,3 +69,11 @@
 ;; TODO: How to specify that this requires shell-maker?
 (package! chatgpt-shell
   :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell.el")))
+
+;; to resolve errors like
+;;     Error (org-roam): Failed to process /Users/david.pritchard/Dev/org-roam/20230811173135-git_comand_for_making_one_branch_look_like_another.org with error Wrong type argument: integer-or-marker-p, nil, skipping...
+;;
+;; See
+;;     https://www.reddit.com/r/emacs/comments/15jyzz7/strange_orgroam_bug_with_links_and_more/
+;;     https://github.com/org-roam/org-roam/issues/2361#issuecomment-1650957932
+(package! org :pin "ca873f7") ;;
