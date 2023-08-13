@@ -14,7 +14,7 @@
   '((org-agenda-mode
     :outline-regexp "  "
     :outline-title dp-org-agenda-knowledgebase-find-outline-title
-    :action dp-org-agenda-counsel-knowledgebase-open
+    :action dp-knowledgebase-open-candidate
     :path-separator ""))
   "A replacement for `counsel-outline-settings'.")
 
