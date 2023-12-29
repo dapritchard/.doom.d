@@ -383,10 +383,13 @@ This function is useful when added to the hook
   ;; `org-agenda-custom-commands' docstring provides better information than
   ;; either of the previously mentioned sources. Also see
   ;; https://github.com/rougier/emacs-gtd#agenda-setup-ii for the example this
-  ;; definition was baed on
+  ;; definition was based upon
   (setq org-agenda-custom-commands
-        '(("g" "Getting Things Done (GTD)"
-           ;; 'type' (composite agenda) section
+        `((;; key
+           "g"
+           ;; desc
+           "Getting Things Done (GTD)"
+           ;; (cmd1 cmd2 ...)
            ((todo "STRT"
                   (;; (org-agenda-skip-function
                    ;;  '(org-agenda-skip-entry-if 'deadline))
@@ -402,21 +405,22 @@ This function is useful when added to the hook
                      (org-agenda-skip-deadline-if-done t)
                      ;; (org-agenda-include-deadlines nil)
                      (org-agenda-overriding-header "\nDeadlines\n")))
-            (tags-todo "inbox"
-                       ((org-agenda-prefix-format "  %?-12t% s")
-                        (org-agenda-overriding-header "\nInbox\n")))
             (todo "TODO"
                   (;; (org-agenda-skip-function
                    ;;  '(org-agenda-skip-entry-if 'deadline))
                    ;; (org-agenda-prefix-format "  %?-12:c [%e] ")
-                   (org-agenda-overriding-header "\nTasks\n"))))
-           ;; 'match' section
-           ((org-agenda-tag-filter-preset '("-@dev"))
-            (org-agenda-prefix-format "  %?-12t% s")))
-          ("f"
-           "File store"
-           tags
-           "knowledgebase")))
+                   (org-agenda-overriding-header "\nTasks\n")))
+            (tags-todo "inbox"
+                       ((org-agenda-prefix-format "  %?-12t% s")
+                        (org-agenda-overriding-header "\nInbox\n")))
+            (todo "IDEA"
+                  (;; (org-agenda-skip-function
+                   ;;  '(org-agenda-skip-entry-if 'deadline))
+                   ;; (org-agenda-prefix-format "  %?-12:c [%e] ")
+                   (org-agenda-overriding-header "\nSomeday\n"))))
+           ;; match
+           ((org-agenda-tag-filter-preset ("-@dev"))
+            (org-agenda-prefix-format "  %?-12t% s")))))
 
   ;; Org Agenda settings
   (setq org-agenda-start-day "-7d" ;; the starting day relative to today
