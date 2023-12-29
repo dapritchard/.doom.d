@@ -362,12 +362,13 @@ This function is useful when added to the hook
   ;;  '((sequence "TODO(t!)" "PROJ(p)" "STRT(s!)" "WAIT(w@)" "HOLD(h@)" "|" "DONE(d!)" "KILL(k@)")
   ;;    (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")))
 
-  (add-to-list 'org-capture-templates
-               `("k" "Knowledgebase" entry
-                 (file "knowledgebase.org")
-                 (file ,(expand-file-name (file-name-concat org-directory
-                                          "capture-template-knowledgebase.txt")))
-                 :refile-targets ((("knowledgebase.org") :maxlevel . 3))))
+  ;; ;; Attempting to move this to org-roam-capture-templates 2023-06-19
+  ;; (add-to-list 'org-capture-templates
+  ;;              `("k" "Knowledgebase" entry
+  ;;                (file "knowledgebase.org")
+  ;;                (file ,(expand-file-name (file-name-concat org-directory
+  ;;                                         "capture-template-knowledgebase.txt")))
+  ;;                :refile-targets ((("knowledgebase.org") :maxlevel . 3))))
 
   ;; Shadow the existing Capture "todo" entry. FIXME: both "t"s still show up in
   ;; the Capture templates.
