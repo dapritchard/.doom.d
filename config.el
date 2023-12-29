@@ -328,7 +328,7 @@ This function is useful when added to the hook
   (org-agenda-files '("gtd.org" "inbox.org"))
 
   ;; Specify what directory Org attach stores files to
-  (org-attach-id-dir (expand-file-name "~/data/org-attach"))
+  (org-attach-id-dir (expand-file-name "~/data/org-attach-data"))
 
   ;; Record a link to the attached file in `org-stored-links' (default is a link
   ;; to the original file location)
