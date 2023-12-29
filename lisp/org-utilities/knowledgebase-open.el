@@ -19,9 +19,9 @@ file(s). Otherwise, attempt to follow the 'URL' property link."
 
 (defun dp-knowledgebase-follow-link ()
   "Follow the 'URL' property link"
-  (let ((link-or-url (org-entry-get nil "URL" 'selective)))
+  (let ((link-or-url (org-entry-get nil "ROAM_REFS" 'selective)))
     (unless link-or-url
-      (error "No 'URL' property found"))
+      (error "No 'ROAM_REFS' property found"))
     (org-link-open-from-string link-or-url)))
 
 (defun dp-org-link-p (s)
