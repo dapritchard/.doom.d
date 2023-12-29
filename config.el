@@ -525,6 +525,40 @@ This function is useful when added to the hook
   (org-set-property "ID" (org-id-get-create)))
 
 
+;; org-roam --------------------------------------------------------------------
+
+(use-package! org-roam
+  :after (org)
+
+  :config
+
+  ;; TODO: add `%^{CREATED_BY}p' property
+  (add-to-list 'org-roam-capture-templates
+               `("k"
+                 "Knowledgebase"
+                 entry
+                 ;; (file ,(expand-file-name (file-name-concat org-directory
+                 ;;                                            "capture-template-knowledgebase.txt")))
+                 "* ${title}%?
+:PROPERTIES:
+:CREATION_TIMESTAMP: %U
+:END:"
+                 :target (file ,(expand-file-name (file-name-concat org-roam-directory
+                                                                    "20230619210159-knowledgebase.org")))
+                 ))
+  )
+
+;; (add-hook 'org-capture-prepare-finalize-hook 'nom/org-roam-capture-create-id)
+
+;; (defun nom/org-roam-capture-create-id ()
+;;   "Create id for captured note and add it to org-roam-capture-template."
+;;   (when (and (not org-note-abort)
+;;              (org-roam-capture-p))
+;;     (org-roam-capture--put :id (org-id-get-create))))
+
+;; (org-set-property "ID" (org-id-get-create))
+
+
 ;; switch workspace shortcuts --------------------------------------------------
 
 (defun dp-workspace-switch-config ()
