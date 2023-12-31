@@ -419,7 +419,7 @@ This function is useful when added to the hook
                    ;; (org-agenda-prefix-format "  %?-12:c [%e] ")
                    (org-agenda-overriding-header "\nSomeday\n"))))
            ;; match
-           ((org-agenda-tag-filter-preset ("-@dev"))
+           ((org-agenda-tag-filter-preset '("-@dev"))
             (org-agenda-prefix-format "  %?-12t% s")))))
 
   ;; Org Agenda settings
