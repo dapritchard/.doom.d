@@ -548,8 +548,8 @@ This function is useful when added to the hook
 :PROPERTIES:
 :CREATION_TIMESTAMP: %U
 :END:"
-                 :target (file ,(expand-file-name (file-name-concat org-roam-directory
-                                                                    "20230619210159-knowledgebase.org")))
+                 :target (file ,(file-name-concat org-roam-directory
+                                                  "20230619210159-knowledgebase.org"))
                  ))
   )
 
