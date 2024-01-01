@@ -536,6 +536,8 @@ This function is useful when added to the hook
 
 (use-package! org-roam
   :after (org)
+(load! "lisp/org-utilities/org-create-inactive-timestamp-now.el")
+(load! "lisp/org-roam-utilities/org-roam-utilities.el")
 
   :config
 
