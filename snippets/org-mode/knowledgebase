@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: knowledgebase
+# key: knowledgebase
+# condition: t
+# expand-env: ((yas-indent-line 'fixed))
+# --
+$0
+:PROPERTIES:
+:ID:       `(org-id-new)`
+:CREATION_TIMESTAMP: `(dp-org-create-inactive-timestamp-now)`
+:CREATED_BY: $1
+:FILETYPE: $2
+:END:
