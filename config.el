@@ -507,7 +507,9 @@ This function is useful when added to the hook
 (load "~/Dev/org-clock-csv/org-clock-csv.el")
 
 (after! org
-  (setq org-roam-directory (expand-file-name "~/Dev/org-roam"))
+  (setq org-roam-directory (expand-file-name "~/Dev/org-roam")
+        dp-knowledgebase-path (expand-file-name "20230619210159-knowledgebase.org"
+                                                org-roam-directory))
   (org-roam-db-autosync-mode))
 
 (load! "lisp/org-effort/org-effort.el")
