@@ -534,28 +534,29 @@ This function is useful when added to the hook
 
 ;; org-roam --------------------------------------------------------------------
 
-(use-package! org-roam
-  :after (org)
 (load! "lisp/org-utilities/org-create-inactive-timestamp-now.el")
 (load! "lisp/org-roam-utilities/org-roam-utilities.el")
 
-  :config
+;; (use-package! org-roam
+;;   :after (org)
 
-  ;; TODO: add `%^{CREATED_BY}p' property
-  (add-to-list 'org-roam-capture-templates
-               `("k"
-                 "Knowledgebase"
-                 entry
-                 ;; (file ,(expand-file-name (file-name-concat org-directory
-                 ;;                                            "capture-template-knowledgebase.txt")))
-                 "* ${title}%?
-:PROPERTIES:
-:CREATION_TIMESTAMP: %U
-:END:"
-                 :target (file ,(file-name-concat org-roam-directory
-                                                  "20230619210159-knowledgebase.org"))
-                 ))
-  )
+;;   :config
+
+;;   ;; TODO: add `%^{CREATED_BY}p' property
+;;   (add-to-list 'org-roam-capture-templates
+;;                `("k"
+;;                  "knowledgebase"
+;;                  entry
+;;                  ;; (file ,(expand-file-name (file-name-concat org-directory
+;;                  ;;                                            "capture-template-knowledgebase.txt")))
+;;                  "* ${title}%?
+;; :PROPERTIES:
+;; :CREATION_TIMESTAMP: %U
+;; :END:"
+;;                  :target (file ,(file-name-concat org-roam-directory
+;;                                                   "20230619210159-knowledgebase.org"))
+;;                  ))
+;;   )
 
 ;; (add-hook 'org-capture-prepare-finalize-hook 'nom/org-roam-capture-create-id)
 
