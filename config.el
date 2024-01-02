@@ -455,8 +455,9 @@ This function is useful when added to the hook
     (org-agenda nil "f")
     (dp-define-key-org-agenda-knowledgebase-open)
     (dp-define-key-counsel-knowledgebase-open)))
+
 (general-def 'doom-leader-notes-map
-  "k" #'dp-agenda-knowledgebase)
+  "K" #'dp-agenda-knowledgebase)
 
 
 ;; ;; Why doesn't the `use-package!' version work?
@@ -518,13 +519,14 @@ This function is useful when added to the hook
     "SPC m m" #'dp-org-set-effort)
 
 (defun dp-popup-knowledgebase ()
-  "Open 'knowledgebase' in a popup buffer"
+  "Open knowledgebase in a popup buffer"
   (interactive)
   (+popup-buffer (get-buffer "20230619210159-knowledgebase.org")))
-(general-def 'doom-leader-notes-map
-  "K" #'dp-popup-knowledgebase)
 
-(general-def 'doom-leader-open-map
+;; (general-def 'doom-leader-notes-map
+;;   "K" #'dp-popup-knowledgebase)
+
+(general-def 'doom-leader-notes-map
   "k" #'dp-knowledgebase-read)
 
 (defun dp-org-set-property-id ()
@@ -537,6 +539,9 @@ This function is useful when added to the hook
 
 (load! "lisp/org-utilities/org-create-inactive-timestamp-now.el")
 (load! "lisp/org-roam-utilities/org-roam-utilities.el")
+
+(general-def 'doom-leader-notes-map
+  "i" #'dp-capture-knowledgebase)
 
 ;; (use-package! org-roam
 ;;   :after (org)
