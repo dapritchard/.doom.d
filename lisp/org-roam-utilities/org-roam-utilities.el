@@ -1,8 +1,5 @@
 ;;; lisp/org-roam-utilities/org-roam-utilities.el -*- lexical-binding: t; -*-
 
-;; This is nearly the same as the `"knowledgebase"' entry in the
-;; `org-roam-capture-templates' defined in the config. Should we just use that
-;; one?
 (defun dp-capture-knowledgebase ()
   (interactive)
   (let (;; (node (org-roam-node-create :id "7726ded9-86fe-47b5-910e-6afd46c46fef"))

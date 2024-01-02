@@ -72,10 +72,10 @@
 ;; ;; from ~/.emacs.d/docs/faq.org
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; https://github.com/hlissner/doom-emacs/issues/3862
-;; https://www.reddit.com/r/emacs/comments/i4uh6w/emacs_hanging_on_osx/
-(after! which-key
-  (setq which-key-allow-imprecise-window-fit t))
+;; ;; https://github.com/hlissner/doom-emacs/issues/3862
+;; ;; https://www.reddit.com/r/emacs/comments/i4uh6w/emacs_hanging_on_osx/
+;; (after! which-key
+;;   (setq which-key-allow-imprecise-window-fit nil))
 
 ;; This advice inserts a comment when hitting RET or "o", etc., which is the
 ;; default vim behavior. However, on average I find that behavior to be more
@@ -444,6 +444,7 @@ This function is useful when added to the hook
          "knowledgebase"
          ((org-agenda-prefix-format "  ")
           (org-agenda-sorting-strategy '(alpha-up))))))
+
 (defun dp-agenda-knowledgebase ()
   "Open the knowledgebase agenda"
   (interactive)
