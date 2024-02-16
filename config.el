@@ -626,10 +626,12 @@ This function is useful when added to the hook
    "I" '(projectile-invalidate-cache :which-key "Invalidate project cache")
    "D" '(projectile-remove-known-project :which-key "Remove known project")))
 
+;; Note that setting `evil-respect-visual-line-mode' here doesn't work and has
+;; to be performed before `evil' is loaded, hence it has been placed in init.el.
+;; https://www.reddit.com/r/DoomEmacs/comments/nzpfy1/comment/h1r9bpa/
 (use-package! evil
   :custom
   (evil-disable-insert-state-bindings t)
-  (evil-respect-visual-line-mode t)
   (evil-move-beyond-eol t))
 
 (use-package! avy

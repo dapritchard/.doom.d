@@ -198,3 +198,6 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
+;; See the `use-package!' call for `evil' in config.el for why this is here
+(setq evil-respect-visual-line-mode t)
