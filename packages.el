@@ -79,3 +79,5 @@
   :recipe (:host github :repo "louietan/anki-editor"))
 (package! org-anki
   :recipe (:host github :repo "eyeinsky/org-anki"))
+(package! snakemake-mode
+  :recipe (:host github :repo "kyleam/snakemake-mode"))
