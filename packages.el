@@ -81,3 +81,4 @@
   :recipe (:host github :repo "eyeinsky/org-anki"))
 (package! snakemake-mode
   :recipe (:host github :repo "kyleam/snakemake-mode"))
+(package! gptel)
