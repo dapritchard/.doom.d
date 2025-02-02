@@ -50,30 +50,17 @@
 ;(unpin! t)
 
 (package! ivy :built-in 'prefer)  ;; org-mru-clock seems to rely on this
-;; (unpin! ess)
-;; (package! ess
-;;   :recipe (:local-repo "ess" :branch "master" :host github :repo "dapritchard/ESS"))
-;; (package! org-gcal
-;;   :recipe (:host github :repo "kidd/org-gcal.el"))
 (package! evil-smartparens)
 (package! org-mru-clock)
 ;; (package! org-clock-csv)
 (package! deadgrep)
 (package! adoc-mode)
-;; FIXME we don't need both of these, right?
 (package! transpose-frame
  :recipe (:host github :repo "emacsorphanage/transpose-frame"
           :files ("transpose-frame.el")))
 (package! shell-maker
   :recipe (:host github :repo "xenodium/shell-maker" :files ("shell-maker*.el")))
 (package! chatgpt-shell
-;; to resolve errors like
-;;     Error (org-roam): Failed to process /Users/david.pritchard/Dev/org-roam/20230811173135-git_comand_for_making_one_branch_look_like_another.org with error Wrong type argument: integer-or-marker-p, nil, skipping...
-;;
-;; See
-;;     https://www.reddit.com/r/emacs/comments/15jyzz7/strange_orgroam_bug_with_links_and_more/
-;;     https://github.com/org-roam/org-roam/issues/2361#issuecomment-1650957932
-(package! org :pin "ca873f7") ;;
   :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell*.el")))
 (package! anki-editor
   :recipe (:host github :repo "louietan/anki-editor"))
