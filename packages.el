@@ -75,3 +75,7 @@
 ;;     https://github.com/org-roam/org-roam/issues/2361#issuecomment-1650957932
 (package! org :pin "ca873f7") ;;
   :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell*.el")))
+(package! anki-editor
+  :recipe (:host github :repo "louietan/anki-editor"))
+(package! org-anki
+  :recipe (:host github :repo "eyeinsky/org-anki"))

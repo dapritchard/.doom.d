@@ -575,6 +575,14 @@ This function is useful when added to the hook
 ;; (org-set-property "ID" (org-id-get-create))
 
 
+;; anki-editor -----------------------------------------------------------------
+
+(use-package! anki-editor
+  :config
+  (setq anki-editor-create-decks nil
+        anki-editor-org-tags-as-anki-tags t))
+
+
 ;; switch workspace shortcuts --------------------------------------------------
 
 (defun dp-workspace-switch-config ()
