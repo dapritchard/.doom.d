@@ -65,11 +65,8 @@
  :recipe (:host github :repo "emacsorphanage/transpose-frame"
           :files ("transpose-frame.el")))
 (package! shell-maker
-  :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("shell-maker.el")))
-;; TODO: How to specify that this requires shell-maker?
+  :recipe (:host github :repo "xenodium/shell-maker" :files ("shell-maker*.el")))
 (package! chatgpt-shell
-  :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell.el")))
-
 ;; to resolve errors like
 ;;     Error (org-roam): Failed to process /Users/david.pritchard/Dev/org-roam/20230811173135-git_comand_for_making_one_branch_look_like_another.org with error Wrong type argument: integer-or-marker-p, nil, skipping...
 ;;
@@ -77,3 +74,4 @@
 ;;     https://www.reddit.com/r/emacs/comments/15jyzz7/strange_orgroam_bug_with_links_and_more/
 ;;     https://github.com/org-roam/org-roam/issues/2361#issuecomment-1650957932
 (package! org :pin "ca873f7") ;;
+  :recipe (:host github :repo "xenodium/chatgpt-shell" :files ("chatgpt-shell*.el")))

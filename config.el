@@ -892,16 +892,43 @@ This function is useful when added to the hook
 
 ;; Python ---------------------------------------------------------------------
 
-(setq lsp-pyright-venv-path (expand-file-name "~/.virtualenv")
-      lsp-pyright-python-executable-cmd "python3"
-      python-fill-docstring-style 'pep-257-nn)
+(after! python
+  (setq python-fill-docstring-style 'pep-257-nn))
+
+;; Configure lsp-mode and lsp-pyright for Python. This is a fallback for files
+;; that don't have a direnv setup
+(after! lsp-mode
+  (setq lsp-pyright-python-executable-cmd "python"
+        lsp-pyright-venv-path ".venv"))
 
 ;; https://github.com/emacs-lsp/lsp-mode/issues/3390
 ;; https://emacs.stackexchange.com/questions/13489/how-do-i-get-emacs-to-recognize-my-python-3-virtual-environment
 ;; https://www.reddit.com/r/emacs/comments/ejc1az/comment/fcwz0gk/?utm_source=share&utm_medium=web2x&context=3
-(use-package! pyvenv
+(use-package pyvenv
   :config
-  (pyvenv-mode 1))
+  (pyvenv-mode 1)
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (let ((venv-path (or (getenv "VIRTUAL_ENV")
+                                   (locate-dominating-file default-directory ".venv"))))
+                (when venv-path
+                  (pyvenv-activate venv-path))))))
+
+;; Use python-shell-interpreter to respect the virtual environment
+(setq python-shell-interpreter "python3")
+
+;; Update lsp-pyright configuration dynamically based on direnv's VIRTUAL_ENV
+(add-hook 'python-mode-hook
+          (lambda ()
+            (let ((venv-path (getenv "VIRTUAL_ENV")))
+              (when venv-path
+                (setq lsp-pyright-venv-path venv-path
+                      lsp-pyright-python-executable-cmd (concat venv-path "/bin/python"))))))
+
+
+;; LaTeX -----------------------------------------------------------------------
+
+(add-hook 'latex-mode-hook #'git-gutter-mode)
 
 
 ;; LSP -------------------------------------------------------------------------
@@ -963,7 +990,24 @@ This function is useful when added to the hook
   :config
   (setq chatgpt-shell-openai-key
         (lambda ()
-          (auth-source-pick-first-password :host "api.openai.com"))))
+          (auth-source-pick-first-password :host "api.openai.com")))
+  (map! :leader
+        :desc "ChatGPT Shell" "l" #'chatgpt-shell))
+
+(after! chatgpt-shell
+  (map! :map chatgpt-shell-mode-map
+        :localleader
+        :desc "Send message"        "s" #'chatgpt-shell-send-message
+        :desc "Clear buffer"        "c" #'chatgpt-shell-clear-buffer
+        :desc "Show history"        "h" #'chatgpt-shell-show-history
+        :desc "Regenerate response" "r" #'chatgpt-shell-regenerate-response))
+
+
+;; gptel -----------------------------------------------------------------------
+
+(use-package! gptel
+ :config
+ (setq! gptel-api-key "your key"))
 
 
 ;; uncollected functions -------------------------------------------------------
