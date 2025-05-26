@@ -56,6 +56,13 @@
 
 ;; Begin personal customizations -----------------------------------------------
 
+;; Doom freezing after `doom upgrade' on 2024-07-30.
+;; https://github.com/doomemacs/doomemacs/issues/7628#issuecomment-1917808642
+;; https://www.reddit.com/r/emacs/comments/197zbtu/how_to_prevent_emacs_freezing_on_macos_seeking/
+(fset 'epg-wait-for-status 'ignore)
+;; https://discord.com/channels/406534637242810369/1273640403974750379/1273640403974750379
+(setq diff-hl-update-async nil)
+
 ;; swap the location of the meta and super keys
 (setq mac-command-modifier 'meta
       mac-option-modifier 'super
@@ -95,20 +102,28 @@
 ;; general keybindings --------------------------------------------------------
 
 (general-def
-  "C-9" #'previous-buffer
-  "C-0" #'next-buffer
+  ;; ;; Commented out to prevent me stretching too frequently (arm fatigue)
+  ;; "C-9" #'previous-buffer
+  ;; "C-0" #'next-buffer
   "M-[" #'scroll-down-line
   "M-]" #'scroll-up-line
   "C-\\" #'text-scale-increase
-  "s-t" #'transpose-frame)
+  "s-t" #'transpose-frame
+  "M-c" 'kill-ring-save
+  "M-v" 'yank)
 
 ;; TODO: add mac copy/paste keybindings: https://emacs.stackexchange.com/questions/62227/enable-os-x-keys-in-emacs
 
 (general-def '(normal motion)
-  "8" #'basic-save-buffer
-  "9" #'evil-beginning-of-visual-line
-  "0" #'evil-last-non-blank
-  "-" #'kill-current-buffer)
+  ;; ;; Commented out to prevent me from reaching for keys on the edges of the
+  ;; ;; keyboard too frequently (arm fatigue)
+  ;; "8" #'basic-save-buffer
+  ;; "9" #'evil-beginning-of-visual-line
+  ;; "0" #'evil-last-non-blank
+  "-" #'kill-current-buffer
+  "RET" #'evil-last-non-blank
+  "<delete>"  #'evil-beginning-of-visual-line
+  )
 
 ;; ;; TAB is bound to `better-jumper-jump-forward', which is also bound to "C-i",
 ;; ;; so let's make it perform indentation since that is what I'm used to from
@@ -423,8 +438,8 @@ This function is useful when added to the hook
             (org-agenda-prefix-format "  %?-12t% s")))))
 
   ;; Org Agenda settings
-  (setq org-agenda-start-day "-7d" ;; the starting day relative to today
-        org-agenda-span 15)        ;; the total number of days that Org Agenda displays
+  (setq org-agenda-start-day "-14d" ;; the starting day relative to today
+        org-agenda-span 22)        ;; the total number of days that Org Agenda displays
 
   ;; Keep the clock open between sessions (e.g. if you want to restart Emacs)
   ;; https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
@@ -467,7 +482,9 @@ This function is useful when added to the hook
 ;;    "g b" #'outline-up-heading))
 (after! evil-org
   (general-def 'motion evil-org-mode-map
-    "g b" #'outline-up-heading))
+    "g b" #'outline-up-heading
+    "g j" #'outline-next-heading
+    "g k" #'outline-previous-heading))
 
 ;; ;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
 ;; (use-package org-gcal
@@ -771,17 +788,82 @@ This function is useful when added to the hook
 (general-def 'normal 'comint-mode-map
   "RET" #'comint-send-input)
 
+(general-def 'insert 'comint-mode-map
+  [up] nil ; previously `comint-previous-input'
+  [down] nil) ; previously `comint-next-input'
+
+(defvar +shell--popup-buffer nil
+  "Most recent popup shell buffer cached by `dp-+shell/toggle'.")
+
+(defun +shell--process-sentinel (process event)
+  "Close popup window when shell process exits"
+  (when (memq (process-status process) '(exit signal))
+    (when-let* ((buf (process-buffer process))
+                ;; Only close if this buffer is our cached popup buffer
+                ((eq buf +shell--popup-buffer))
+                (win (get-buffer-window buf 'visible)))
+      (quit-restore-window win nil)
+      (setq +shell--popup-buffer nil))))
+
+;;;###autoload
+(defun dp-+shell/toggle (&optional arg)
+  "Toggle a bottom popup `shell' in the project root.
+
+* If the popup is visible **and selected**, hide it (`quit-window`).
+* Otherwise show it, creating the buffer if necessary.
+* With `C-u` (\\[universal-argument]) always make a *fresh* shell
+  in the current directory instead of re‑using the cached one."
+  (interactive "P")
+  (let* ((project-root (or (doom-project-root) default-directory))
+         (bufname      (format "*doom:shell-popup:%s*" project-root))
+         (buf          (get-buffer bufname))
+         (win          (and buf (get-buffer-window buf 'visible))))
+    (cond
+     ;; ─────────────────────────────────────────────────────────────── hide ──
+     ((and win (eq (selected-window) win))
+      (quit-window nil win))                 ;closes side‑window & leaves layout
+     ;; ─────────────────────────────────────────────────────────────── show ──
+     (t
+      (unless (and buf (buffer-live-p buf)
+                   (get-buffer-process buf)  ; Check if process is still alive
+                   (not arg))
+        ;; (re)create the buffer
+        (let ((default-directory project-root))
+          (setq buf (shell bufname)))        ;Comint‑based shell
+        (with-current-buffer buf
+          (doom-mark-buffer-as-real-h)       ;so Doom won’t auto‑GC it
+          ;; Close window when shell process exits (e.g., Ctrl-d)
+          (when-let ((proc (get-buffer-process buf)))
+            (set-process-sentinel proc #'+shell--process-sentinel))))
+      (setq +shell--popup-buffer buf)
+      ;; display‑buffer‑in‑side‑window provides automatic slot/size handling
+      (pop-to-buffer
+       buf
+       '((display-buffer-reuse-window
+          display-buffer-in-side-window)
+         (side . bottom) (slot . 1)
+         (window-height . 0.3)
+         (select . t)))))))                  ;stay in the shell window
+
+;;; ---------------------------------------------------------------------------
+;;; Key binding – “Shell (popup)” appears under  SPC o c
+;;; ---------------------------------------------------------------------------
+(map! :leader
+      (:prefix ("o" . "open")
+       :desc "Shell (popup)" "c" #'dp-+shell/toggle))
+
 
 ;; magit -----------------------------------------------------------------------
 
 (use-package! magit
 
   :general
-  (:keymaps 'doom-leader-git-map
-   :wk-full-keys nil
-   "d" '(git-gutter:popup-diff :which-key "Popup hunk diff")
-   "w" '(git-gutter:update-all-windows :which-key "Update window's gutter")
-   "W" '(git-gutter:update-all-windows :which-key "Update all window's gutters"))
+  ;; ;; git-gutter seems to have been removed in favor of hl-diff
+  ;; (:keymaps 'doom-leader-git-map
+  ;;  :wk-full-keys nil
+  ;;  "d" '(git-gutter:popup-diff :which-key "Popup hunk diff")
+  ;;  "w" '(git-gutter:update-all-windows :which-key "Update window's gutter")
+  ;;  "W" '(git-gutter:update-all-windows :which-key "Update all window's gutters"))
 
   :config
   ;; Don't query for confirmation when the summary line is too long
@@ -842,7 +924,8 @@ This function is useful when added to the hook
     "C-S-m" (lambda () (interactive) (insert " %>% ")))
 
   ;; (load! "lisp/ess+/ess-history.el")
-  (load! "lisp/ess+/ess-utils.el"))
+  ;; (load! "lisp/ess+/ess-utils.el")
+  )
 
 
 ;; Haskell ---------------------------------------------------------------------
@@ -994,29 +1077,107 @@ This function is useful when added to the hook
 
 ;; chatgpt-shell ---------------------------------------------------------------
 
-(use-package! chatgpt-shell
-  :config
-  (setq chatgpt-shell-openai-key
-        (lambda ()
-          (auth-source-pick-first-password :host "api.openai.com")))
-  (map! :leader
-        :desc "ChatGPT Shell" "l" #'chatgpt-shell))
+;; (setq slack-prompt
+;;       "You are ChatGPT, and your responses will be pasted directly into Slack. Slack supports a limited set of Markdown-like formatting. Format your responses accordingly using the following rules:
 
-(after! chatgpt-shell
-  (map! :map chatgpt-shell-mode-map
-        :localleader
-        :desc "Send message"        "s" #'chatgpt-shell-send-message
-        :desc "Clear buffer"        "c" #'chatgpt-shell-clear-buffer
-        :desc "Show history"        "h" #'chatgpt-shell-show-history
-        :desc "Regenerate response" "r" #'chatgpt-shell-regenerate-response))
+;; - Use `*bold*` for bold text.
+;; - Use `_italic_` for italic text.
+;; - Use `` `inline code` `` for inline code.
+;; - Use triple backticks for multi-line code blocks **without specifying a language**. Don't include any extra newlines of whitespace after the code.
+;; - Use `>` for blockquotes.
+;; - Use `-` or `•` for bullet points.
+;; - Use newlines to separate paragraphs (avoid excessive whitespace).
+;; - Avoid using full Markdown features that Slack does not support (e.g., headings `#`, tables, or full hyperlinks `[text](url)`, as they won’t render properly).
+;; - Avoid lists that have embedded multi-line code blocks as they won’t render properly.
+
+;; ;; Ensure that your responses are well-structured, easy to read, and formatted for direct use in Slack.")
+
+;; (use-package! chatgpt-shell
+;;   :config
+;;   (setq chatgpt-shell-openai-key
+;;         (lambda ()
+;;           (auth-source-pick-first-password :host "api.openai.com")))
+;;   (map! :leader
+;;         :desc "ChatGPT Shell" "l" #'chatgpt-shell)
+;;   (map! :map chatgpt-shell-mode-map
+;;         "M-RET" #'chatgpt-shell-submit
+;;         "RET" nil) ; Default is that RET sends a command to the LLM
+;;   ;; (push (cons "Slack markdown" slack-prompt) chatgpt-shell-system-prompts)
+;;   )
+
+;; (after! chatgpt-shell
+;;   (map! :map chatgpt-shell-mode-map
+;;         :localleader
+;;         :desc "Send message"        "s" #'chatgpt-shell-send-message
+;;         :desc "Clear buffer"        "c" #'chatgpt-shell-clear-buffer
+;;         :desc "Show history"        "h" #'chatgpt-shell-show-history
+;;         :desc "Regenerate response" "r" #'chatgpt-shell-regenerate-response))
 
 
 ;; gptel -----------------------------------------------------------------------
 
-(use-package! gptel
- :config
- (setq! gptel-api-key "your key"))
+;; ;; NOTE: uses the entry in ~/.authinfo for credentials
+;; (use-package! gptel
+;;   :config
+;;   (map! :leader
+;;         :desc "Send LLM query" "k" #'gptel-menu)
+;;   (map! :map chatgpt-shell-mode-map
+;;         "M-RET" #'gptel-send)
+;;   (setq gptel-default-mode #'org-mode))
 
+(after! gptel
+
+  ;; Add keybindings to `gptel-mode-map'
+  (map! :map gptel-mode-map
+        "M-<return>" #'gptel-send
+        :leader
+        "k" #'dp-gptel-clear-history)
+
+  ;; Register the backend and its models. See the `gptel' org-roam documentation
+  ;; for an explanation for how these model names were obtained
+  (gptel-make-anthropic "Claude"
+    :stream t
+    :key #'gptel-api-key
+    :models '(claude-opus-4-20250514
+              claude-sonnet-4-20250514
+              claude-3-7-sonnet-20250219
+              claude-3-5-sonnet-20241022
+              claude-3-5-haiku-20241022
+              claude-3-5-sonnet-20240620
+              claude-3-haiku-20240307
+              claude-3-opus-20240229))
+
+  ;; Pick the default model (change this any time)
+  (setq gptel-model 'claude-sonnet-4-20250514)
+
+  ;; Set org-mode as the default rather than markdown mode
+  (setq gptel-default-mode #'org-mode))
+
+(defun dp-gptel-clear-history ()
+  "Erase the current `gptel-mode' conversation and re‑initialise the buffer.
+
+After running, the buffer is identical to what you get from
+`M-x gptel` (or `C-u M-x gptel`) but it keeps the same buffer
+name, major mode and backend/model settings."
+  (interactive)
+  (unless gptel-mode
+    (user-error "This command only works in a gptel chat buffer"))
+  (let ((inhibit-read-only t))
+    ;; 1. Remove every gptel overlay and its text properties
+    (remove-overlays (point-min) (point-max) 'gptel t)
+    (set-text-properties (point-min) (point-max) nil)
+
+    ;; 2. Forget the saved bounds so the next save doesn’t resurrect them
+    (setq-local gptel--bounds nil)
+
+    ;; 3. Wipe the visible text
+    (erase-buffer)
+
+    ;; 4. Insert the standard first‑prompt prefix
+    (insert (gptel-prompt-prefix-string))
+    (goto-char (point-max)))
+
+  (message "gptel history cleared – start typing a new prompt."))
 
 ;; uncollected functions -------------------------------------------------------
 
