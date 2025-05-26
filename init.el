@@ -21,6 +21,7 @@
 
        :completion
        company           ; the ultimate code completion backend
+       ;; (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy
@@ -42,10 +43,12 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;smooth-scroll     ; So smooth you won't believe it's not butter
        ;;tabs              ; a tab bar for Emacs
        (treemacs +lsp)     ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
-       vc-gutter         ; vcs diff in the fringe
+       (vc-gutter
+        +pretty)         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows  (enables ace-window - DP)
        workspaces        ; tab emulation, persistence & separate workspaces
@@ -68,6 +71,7 @@
        :emacs
        dired             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
+       ;;eww               ; the internet is gross
        ;;ibuffer         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
@@ -85,25 +89,25 @@
 
        :tools
        ;;ansible
+       ;;biblio            ; Writes a PhD for you (citation needed)
+       ;;collab            ; buffers with friends
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        direnv
        docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
-       ;;gist              ; interacting with github gists
        (lookup
         +dictionary)     ; navigate your code and its documentation
+       llm               ; when I said you needed friends, I didn't mean...
        lsp               ; M-x vscode
        (magit +forge)    ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
        pdf               ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
-       ;;rgb               ; creating color strings
-       ;;taskrunner        ; taskrunner for all your projects
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
+       ;;tree-sitter       ; syntax and parsing, sitting in a tree...
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
@@ -129,15 +133,18 @@
        ess               ; emacs speaks statistics
        ;;factor
        ;;faust             ; dsp, but you get to keep your soul
+       ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
        ;;gdscript          ; the language you waited for
+       ;;(graphql +lsp)    ; Give queries a REST
        ;;(go +lsp)         ; the hipster dialect
        (haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
-       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+       ;;janet             ; Fun fact: Janet is me!
+       ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
        (javascript +lsp) ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
@@ -171,7 +178,7 @@
         ;; +guile   ;; I'm getting an error `void-function geiser-activate-implementation'
         )          ; a fully conniving family of lisps
        sh                ; she sells {ba,z,fi}sh shells on the C xor
-       sml
+       sml               ; standard ML
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
@@ -190,7 +197,6 @@
        everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
        ;;literate
