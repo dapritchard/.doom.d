@@ -52,7 +52,7 @@
 (package! ivy :built-in 'prefer)  ;; org-mru-clock seems to rely on this
 (package! evil-smartparens)
 (package! org-mru-clock)
-;; (package! org-clock-csv)
+;; (package! org-clock-csv) ;; Uses a local version now?
 (package! deadgrep)
 (package! adoc-mode)
 (package! transpose-frame
@@ -68,5 +68,6 @@
   :recipe (:host github :repo "eyeinsky/org-anki"))
 (package! snakemake-mode
   :recipe (:host github :repo "kyleam/snakemake-mode"))
-;; (package! gptel)
+(package! gptel-prompts
+  :recipe (:host github :repo "jwiegley/gptel-prompts"))
 (package! gptel-magit :disable t)

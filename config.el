@@ -1147,11 +1147,20 @@ This function is useful when added to the hook
               claude-3-haiku-20240307
               claude-3-opus-20240229))
 
-  ;; Pick the default model (change this any time)
-  (setq gptel-model 'claude-sonnet-4-20250514)
+  ;; ;; Pick the default model
+  ;; ;; For some reason I get a warning when starting with sonnet
+  ;; (setq gptel-model 'claude-sonnet-4-20250514)
+  (setq gptel-model 'gpt-4o)
 
   ;; Set org-mode as the default rather than markdown mode
   (setq gptel-default-mode #'org-mode))
+
+(use-package! gptel-prompts
+  :after gptel
+  :config
+  (setq gptel-prompts-directory "~/.doom.d/gptel-prompt-entries")
+  (gptel-prompts-update)
+  (gptel-prompts-add-update-watchers))
 
 (defun dp-gptel-clear-history ()
   "Erase the current `gptel-mode' conversation and re‑initialise the buffer.
