@@ -1125,6 +1125,25 @@ This function is useful when added to the hook
 ;;         "M-RET" #'gptel-send)
 ;;   (setq gptel-default-mode #'org-mode))
 
+;; Functions for cleaning up gptel responses in shell modes
+(defun dp-gptel-fix-shell-newlines (start end)
+  "Remove unwanted newlines before gptel responses in shell modes."
+  (when (derived-mode-p 'shell-mode 'eshell-mode 'term-mode 'vterm-mode)
+    (save-excursion
+      ;; Look backwards from start to find and remove newlines
+      (goto-char start)
+      (while (and (> (point) (point-min))
+                  (looking-back "\n" (1- (point))))
+        (delete-char -1)
+        (setq start (1- start))
+        (setq end (1- end))))))
+
+(defun dp-gptel-shell-mode-setup ()
+  "Configure gptel for shell modes without extra newlines."
+  (when (derived-mode-p 'shell-mode 'eshell-mode 'term-mode 'vterm-mode)
+    ;; Set buffer-local variable to override default "\n\n" separator
+    (setq-local gptel-response-separator "")))
+
 (after! gptel
 
   ;; Add keybindings to `gptel-mode-map'
@@ -1153,7 +1172,17 @@ This function is useful when added to the hook
   (setq gptel-model 'gpt-4o)
 
   ;; Set org-mode as the default rather than markdown mode
-  (setq gptel-default-mode #'org-mode))
+  (setq gptel-default-mode #'org-mode)
+
+  ;; Hook runs after gptel inserts a response, allowing us to clean up unwanted formatting
+  (add-hook 'gptel-post-response-functions #'dp-gptel-fix-shell-newlines)
+
+  ;; These hooks ensure gptel configuration is applied when shell buffers are created
+  ;; Each shell mode needs its own hook since they're separate major modes
+  (add-hook 'shell-mode-hook #'dp-gptel-shell-mode-setup)
+  (add-hook 'eshell-mode-hook #'dp-gptel-shell-mode-setup)
+  (add-hook 'term-mode-hook #'dp-gptel-shell-mode-setup)
+  (add-hook 'vterm-mode-hook #'dp-gptel-shell-mode-setup))
 
 (use-package! gptel-prompts
   :after gptel
@@ -1187,6 +1216,7 @@ name, major mode and backend/model settings."
     (goto-char (point-max)))
 
   (message "gptel history cleared – start typing a new prompt."))
+
 
 ;; uncollected functions -------------------------------------------------------
 
