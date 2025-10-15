@@ -441,6 +441,15 @@ This function is useful when added to the hook
   (setq org-agenda-start-day "-14d" ;; the starting day relative to today
         org-agenda-span 22)        ;; the total number of days that Org Agenda displays
 
+  ;; Org Agenda settings
+  (setq
+   ;; the starting day relative to today
+   org-agenda-start-day "-14d"
+   ;; the total number of days that Org Agenda displays. Note that
+   ;; `string-to-number' discards any characters after the number before
+   ;; converting to an integer
+   org-agenda-span (+ 8 (abs (string-to-number org-agenda-start-day))))
+
   ;; Keep the clock open between sessions (e.g. if you want to restart Emacs)
   ;; https://orgmode.org/manual/Clocking-Work-Time.html#Clocking-Work-Time
   (setq org-clock-persist t)
@@ -1000,6 +1009,7 @@ This function is useful when added to the hook
   (pyvenv-mode 1)
   (add-hook 'python-mode-hook
             (lambda ()
+              (envrc-reload)
               (let ((venv-path (or (getenv "VIRTUAL_ENV")
                                    (locate-dominating-file default-directory ".venv"))))
                 (when venv-path
@@ -1011,6 +1021,7 @@ This function is useful when added to the hook
 ;; Update lsp-pyright configuration dynamically based on direnv's VIRTUAL_ENV
 (add-hook 'python-mode-hook
           (lambda ()
+            (envrc-reload)
             (let ((venv-path (getenv "VIRTUAL_ENV")))
               (when venv-path
                 (setq lsp-pyright-venv-path venv-path
