@@ -177,6 +177,9 @@
 ;;   "o" #'dired-find-file-other-window)
 
 (after! dired
+  ;; Disable dired-omit-mode by default (can still toggle with M-x dired-omit-mode)
+  (setq dired-omit-mode nil)
+
   (general-unbind 'normal 'dired-mode-map
     "-"))
 
