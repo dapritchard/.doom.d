@@ -889,10 +889,22 @@ This function is useful when added to the hook
 
 ;; ESS -------------------------------------------------------------------------
 
-(defun my-inferior-ess-init ()
-  (setq-local ansi-color-for-comint-mode 'filter)
+(defun dp-inferior-ess-setup ()
+  ;; Strip OSC 8 hyperlink sequences (only when present)
+  ;; Note: ansi-color-process-output is already in comint-output-filter-functions
+  (add-hook 'comint-preoutput-filter-functions
+            (lambda (string)
+              ;; Fast check: only run regex if string contains "]8;;"
+              (if (string-match-p "\\]8;;" string)
+                  (replace-regexp-in-string
+                   "\e\\]8;;[^\e]*\e\\\\\\([^\e]*\\)\e\\]8;;\e\\\\"
+                   "\\1"
+                   string)
+                string))  ; Return unchanged if no OSC sequences
+            nil t)
+
   (smartparens-mode 1))
-(add-hook 'inferior-ess-mode-hook 'my-inferior-ess-init)
+(add-hook 'inferior-ess-mode-hook 'dp-inferior-ess-setup)
 
 ;; TODO: see https://github.com/emacs-ess/ESS/issues/1137 for a possible config
 ;; tweak?
@@ -919,7 +931,6 @@ This function is useful when added to the hook
 
   ;; prevent adding an additional hash to comments (i.e. so that comments are # not ##)
   (add-hook 'ess-mode-hook (lambda () (setq-local comment-add 0)))
-  (add-hook 'ess-mode-hook (lambda () (setq-local ansi-color-for-comint-mode 'filter)))
 
   (general-def 'ess-mode-map
     ";" #'ess-insert-assign
