@@ -162,6 +162,21 @@
   "t" #'toggle-truncate-lines)
 
 
+;; visual-fill-column ---------------------------------------------------------
+
+;; Soft-wrap at a fixed column width instead of window edge
+(use-package! visual-fill-column
+  :config
+  (setq-default visual-fill-column-width 120
+                visual-fill-column-center-text nil)
+
+  (defun my/visual-line-mode-setup ()
+    "Enable visual-fill-column when visual-line-mode is on, disable when off."
+    (visual-fill-column-mode (if visual-line-mode 1 -1)))
+
+  (add-hook 'visual-line-mode-hook #'my/visual-line-mode-setup))
+
+
 ;; window movement ------------------------------------------------------------
 
 (general-def
