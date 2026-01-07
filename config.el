@@ -59,9 +59,13 @@
 ;; Doom freezing after `doom upgrade' on 2024-07-30.
 ;; https://github.com/doomemacs/doomemacs/issues/7628#issuecomment-1917808642
 ;; https://www.reddit.com/r/emacs/comments/197zbtu/how_to_prevent_emacs_freezing_on_macos_seeking/
-(fset 'epg-wait-for-status 'ignore)
 ;; https://discord.com/channels/406534637242810369/1273640403974750379/1273640403974750379
 (setq diff-hl-update-async nil)
+
+;; EPG/GPG configuration for macOS
+;; Ensure Emacs can communicate with GPG agent properly
+(setq epg-pinentry-mode 'loopback)  ;; Allow Emacs to handle passphrase prompts
+(setenv "GPG_AGENT_INFO" nil)       ;; Let GPG find the agent automatically
 
 ;; swap the location of the meta and super keys
 (setq mac-command-modifier 'meta
@@ -439,10 +443,6 @@ This function is useful when added to the hook
            ;; match
            ((org-agenda-tag-filter-preset '("-@dev"))
             (org-agenda-prefix-format "  %?-12t% s")))))
-
-  ;; Org Agenda settings
-  (setq org-agenda-start-day "-14d" ;; the starting day relative to today
-        org-agenda-span 22)        ;; the total number of days that Org Agenda displays
 
   ;; Org Agenda settings
   (setq
@@ -1214,7 +1214,14 @@ This function is useful when added to the hook
   :config
   (setq gptel-prompts-directory "~/.doom.d/gptel-prompt-entries")
   (gptel-prompts-update)
-  (gptel-prompts-add-update-watchers))
+  (gptel-prompts-add-update-watchers)
+  ;; Preserve default gptel directives
+  (setq gptel-directives
+        (append '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
+                  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+                  (writing . "You are a large language model and a writing assistant. Respond concisely.")
+                  (chat . "You are a large language model and a conversation partner. Respond concisely."))
+                gptel-directives)))
 
 (defun dp-gptel-clear-history ()
   "Erase the current `gptel-mode' conversation and re‑initialise the buffer.
