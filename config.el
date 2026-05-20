@@ -511,7 +511,11 @@ This function is useful when added to the hook
   (general-def 'motion evil-org-mode-map
     "g b" #'outline-up-heading
     "g j" #'outline-next-heading
-    "g k" #'outline-previous-heading))
+    "g k" #'outline-previous-heading)
+  ;; The global `RET' -> `evil-last-non-blank' rebinding shadows Org's DWIM
+  ;; behavior, so restore it in Org buffers.
+  (general-def '(normal motion) evil-org-mode-map
+    "RET" #'+org/dwim-at-point))
 
 ;; ;; https://fuco1.github.io/2019-02-02-Org-mode-and-google-calendar-sync.html
 ;; (use-package org-gcal
