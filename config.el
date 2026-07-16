@@ -167,7 +167,7 @@
 ;; Soft-wrap at a fixed column width instead of window edge
 (use-package! visual-fill-column
   :config
-  (setq-default visual-fill-column-width 120
+  (setq-default visual-fill-column-width 100
                 visual-fill-column-center-text nil)
 
   (defun my/visual-line-mode-setup ()
@@ -175,6 +175,12 @@
     (visual-fill-column-mode (if visual-line-mode 1 -1)))
 
   (add-hook 'visual-line-mode-hook #'my/visual-line-mode-setup))
+
+;; adaptive-wrap ---------------------------------------------------------------
+
+;; Preserve indentation on soft-wrapped lines (e.g. markdown lists)
+(use-package! adaptive-wrap
+  :hook (visual-line-mode . adaptive-wrap-prefix-mode))
 
 
 ;; window movement ------------------------------------------------------------

@@ -72,3 +72,4 @@
   :recipe (:host github :repo "jwiegley/gptel-prompts"))
 (package! gptel-magit :disable t)
 (package! visual-fill-column)
+(package! adaptive-wrap)
