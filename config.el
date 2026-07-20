@@ -1415,15 +1415,10 @@ first when it is the current workspace."
   ;; for an explanation for how these model names were obtained
   (gptel-make-anthropic "Claude"
     :stream t
-    :key #'gptel-api-key
-    :models '(claude-opus-4-20250514
-              claude-sonnet-4-20250514
-              claude-3-7-sonnet-20250219
-              claude-3-5-sonnet-20241022
-              claude-3-5-haiku-20241022
-              claude-3-5-sonnet-20240620
-              claude-3-haiku-20240307
-              claude-3-opus-20240229))
+    :key 'gptel-api-key-from-auth-source
+    :models '(claude-opus-4-5-20251101
+              claude-sonnet-4-5-20250929
+              claude-haiku-4-5-20251001))
 
   ;; ;; Pick the default model
   ;; ;; For some reason I get a warning when starting with sonnet
