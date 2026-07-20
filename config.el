@@ -321,6 +321,12 @@ This function is useful when added to the hook
   "1" #'+workspace/other)
 
 
+;; .dir-locals.el --------------------------------------------------------------
+
+;; Worktrees live under ~/Worktrees, not ~/Dev, so trust their .dir-locals.el too.
+(add-to-list 'safe-local-variable-directories (expand-file-name "~/Worktrees"))
+
+
 ;; multiple-cursors
 ;; https://github.com/gabesoft/evil-mc/issues/83
 
@@ -692,6 +698,13 @@ This function is useful when added to the hook
 ;; project file searches always reflect the current state of the repo.
 (setq projectile-enable-caching nil)
 
+;; Discover git worktrees (each carries a .git file, so projectile treats it
+;; as its own project) from the central worktree dir. Depth 1 = the flat
+;; `repo_branch' dirs are immediate children. Deferred with `after!' because
+;; projectile is lazy-loaded, so the variable is unbound at startup.
+(after! projectile
+  (add-to-list 'projectile-project-search-path '("~/Worktrees/" . 1)))
+
 ;; Note that setting `evil-respect-visual-line-mode' here doesn't work and has
 ;; to be performed before `evil' is loaded, hence it has been placed in init.el.
 ;; https://www.reddit.com/r/DoomEmacs/comments/nzpfy1/comment/h1r9bpa/
@@ -896,9 +909,133 @@ This function is useful when added to the hook
 
 ;; magit -----------------------------------------------------------------------
 
+(defvar dp-magit-worktree--rev nil
+  "The revision being checked out into a new worktree, for naming.
+Bound by `dp-magit-worktree--capture-rev' around
+`magit--read-worktree-directory', because that function only forwards the
+rev to `magit-read-worktree-directory-function' when it is a local branch --
+so `dp-magit-read-worktree-directory-fullname' reads it from here to name
+worktrees for remote branches, tags, and raw/detached commits too.")
+
+(defun dp-magit-read-worktree-directory-fullname (prompt branch)
+  "Read a worktree directory under `magit-read-worktree-offsite-directory'.
+Like `magit-read-worktree-directory-offsite', but the flat-name prefix is
+the FULL name of the repository's main worktree directory, never truncated
+at the first underscore.  The prefix is derived from the common git
+directory, so it is identical no matter which worktree this is called from
+\(and never accumulates when creating a worktree from within a worktree).
+The suffix is BRANCH, or -- when Magit passes no branch because the checkout
+target is not a local branch (a remote branch, tag, or detached commit) --
+the captured `dp-magit-worktree--rev', with slashes replaced by dashes.
+Only when no rev is available at all does it fall back to a temporary name."
+  (mkdir magit-read-worktree-offsite-directory t)
+  (let* ((common (magit-git-string "rev-parse" "--path-format=absolute"
+                                   "--git-common-dir"))
+         (repo (if common
+                   (file-name-nondirectory
+                    (directory-file-name (file-name-directory common)))
+                 (file-name-nondirectory (directory-file-name default-directory))))
+         (prefix (concat repo "_"))
+         (rev (or branch dp-magit-worktree--rev)))
+    (read-directory-name
+     prompt magit-read-worktree-offsite-directory nil nil
+     (if rev
+         (concat prefix (string-replace "/" "-" rev))
+       (file-name-nondirectory
+        (make-temp-name (expand-file-name prefix magit-read-worktree-offsite-directory)))))))
+
+(defun dp-magit-worktree--capture-rev (orig rev branchp)
+  "Bind `dp-magit-worktree--rev' to REV around ORIG.
+Advice for `magit--read-worktree-directory' so the naming function can see
+the revision even when it is not a local branch (BRANCHP nil)."
+  (let ((dp-magit-worktree--rev rev))
+    (funcall orig rev branchp)))
+
+(defun dp-magit-worktree--suppress-visit (orig &rest args)
+  "Call ORIG with `magit-diff-visit-directory' disabled.
+Advice (`:around') for the worktree-creation commands, which end by visiting
+the new worktree via `magit-diff-visit-directory'.  That visit repoints the
+window in the *current* workspace at the new worktree's buffers, making the
+parent workspace appear to have switched branches.  Suppressing it leaves
+the parent workspace untouched; `dp-magit-worktree--open-in-workspace' then
+handles all navigation by opening the worktree in its own workspace."
+  (cl-letf (((symbol-function 'magit-diff-visit-directory) #'ignore))
+    (apply orig args)))
+
+(defun dp-magit-worktree--open-in-workspace (directory &rest _)
+  "Register the new worktree DIRECTORY and open it in its own workspace.
+Used as `:after' advice on the worktree-creation commands, which by default
+drop you into the new worktree via `magit-diff-visit-directory' in the
+current workspace (suppressed by `dp-magit-worktree--suppress-visit') --
+bypassing `projectile-switch-project', so the worktree is neither registered
+with projectile (won't appear in `SPC p p') nor given its own workspace
+\(you stay in the workspace you created it from).  This registers it, and when
+workspaces are active switches into a dedicated workspace -- named after the
+full worktree dir -- showing the worktree's Magit status instead of the
+usual find-file prompt.  DIRECTORY is the first argument of both
+`magit-worktree-checkout' and `magit-worktree-branch'; trailing args
+are ignored."
+  (when (and (bound-and-true-p projectile-mode) (stringp directory))
+    (let ((dir (file-name-as-directory (expand-file-name directory))))
+      (when (file-directory-p dir)
+        (projectile-add-known-project dir)
+        (when (and (bound-and-true-p persp-mode)
+                   (fboundp '+workspaces-switch-to-project-h))
+          (let ((+workspaces-switch-project-function
+                 (lambda (root)
+                   (magit-status-setup-buffer root)
+                   ;; A fresh workspace opens on the Doom dashboard; drop it so
+                   ;; the worktree's Magit status buffer is the only window.
+                   (delete-other-windows)))
+                (current-prefix-arg nil))
+            (+workspaces-switch-to-project-h dir)))))))
+
+(defun dp-magit-worktree--workspace-name-for (root)
+  "Return the name of the workspace whose project is ROOT, or nil.
+Workspaces opened for a project store its root in the `+workspace-project'
+persp parameter (set by `+workspaces-switch-to-project-h' to the root's
+`file-truename'), so this matches on that -- robust to workspace renames and
+to the name-uniquifying Doom does on collisions, unlike matching by name.
+Compares resolved truenames as strings rather than with `file-equal-p' so it
+still matches after the worktree directory has been deleted (`file-equal-p'
+stats the files, which no longer exist), and regardless of symlinks or
+trailing slashes."
+  (let ((root (file-name-as-directory (file-truename root))))
+    (cl-find-if
+     (lambda (name)
+       (let* ((ws (+workspace-get name t))
+              (proot (and ws (persp-parameter '+workspace-project ws))))
+         (and proot
+              (string= root (file-name-as-directory (file-truename proot))))))
+     (+workspace-list-names))))
+
+(defun dp-magit-worktree--cleanup-on-delete (worktree &rest _)
+  "After deleting WORKTREE, drop its projectile entry and kill its workspace.
+`magit-worktree-delete' handles the git side (prune, and returning to the
+primary worktree's status when you delete the one you are in) but leaves
+behind the stale projectile known-project entry and the now-orphaned persp
+workspace for the worktree.  This removes both.  WORKTREE is the first
+argument of `magit-worktree-delete'.
+
+`projectile-remove-known-project' matches by exact string, and projectile
+stores roots abbreviated, so the path must be abbreviated to match.  The
+workspace is found by its project root, not its name (see
+`dp-magit-worktree--workspace-name-for'); `+workspace/kill' switches away
+first when it is the current workspace."
+  (when (stringp worktree)
+    (when (bound-and-true-p projectile-mode)
+      (projectile-remove-known-project
+       (file-name-as-directory (abbreviate-file-name (expand-file-name worktree)))))
+    (when (and (bound-and-true-p persp-mode) (fboundp '+workspace/kill))
+      (when-let ((ws-name (dp-magit-worktree--workspace-name-for worktree)))
+        (+workspace/kill ws-name)))))
+
 (use-package! magit
 
   :general
+  (:keymaps 'doom-leader-git-map
+   :wk-full-keys nil
+   "w" '(magit-worktree :which-key "Git Worktrees"))
   ;; ;; git-gutter seems to have been removed in favor of hl-diff
   ;; (:keymaps 'doom-leader-git-map
   ;;  :wk-full-keys nil
@@ -908,7 +1045,45 @@ This function is useful when added to the hook
 
   :config
   ;; Don't query for confirmation when the summary line is too long
-  (delete 'overlong-summary-line git-commit-style-convention-checks))
+  (delete 'overlong-summary-line git-commit-style-convention-checks)
+  ;; Load the worktree library eagerly so its defcustoms exist (and thus our
+  ;; overrides in the `after! magit-worktree' block below take effect) and the
+  ;; worktrees status section is available, without waiting for the first
+  ;; worktree command.
+  (require 'magit-worktree))
+
+;; Worktrees -------------------------------------------------------------------
+;; These settings key off `magit-worktree', NOT `magit': the variables below are
+;; defcustoms defined in magit-worktree.el, which loads lazily. Setting them from
+;; magit's :config runs *before* that file loads, so the defcustom defaults
+;; clobber our values (that is why worktrees kept landing in ~/Dev via the
+;; `sibling' default). Running after magit-worktree loads guarantees ours win.
+(after! magit-worktree
+  ;; Put all worktrees in one flat, predictable place, named `repo_branch'
+  ;; (repo prefix comes from `dp-magit-read-worktree-directory-fullname', above,
+  ;; so the full repo name is preserved -- no underscore truncation).
+  (setq magit-read-worktree-directory-function
+        #'dp-magit-read-worktree-directory-fullname
+        magit-read-worktree-offsite-directory (expand-file-name "~/Worktrees/"))
+  ;; Show live worktrees in the status buffer (jump with RET, delete with k).
+  ;; Placed just after the stashes section; move the anchor to reposition.
+  (magit-add-section-hook 'magit-status-sections-hook
+                          #'magit-insert-worktrees
+                          #'magit-insert-stashes
+                          'append)
+  ;; A freshly created worktree: keep the parent workspace where it is (the
+  ;; built-in `magit-diff-visit-directory' call would repoint it at the new
+  ;; worktree), then register the worktree with projectile and open it in its
+  ;; own workspace (see `dp-magit-worktree--open-in-workspace' for why).
+  (advice-add 'magit-worktree-checkout :around #'dp-magit-worktree--suppress-visit)
+  (advice-add 'magit-worktree-branch   :around #'dp-magit-worktree--suppress-visit)
+  (advice-add 'magit-worktree-checkout :after #'dp-magit-worktree--open-in-workspace)
+  (advice-add 'magit-worktree-branch   :after #'dp-magit-worktree--open-in-workspace)
+  ;; Capture the checkout rev so worktrees named after a remote branch, tag, or
+  ;; detached commit get a meaningful name instead of a random temp one.
+  (advice-add 'magit--read-worktree-directory :around #'dp-magit-worktree--capture-rev)
+  ;; Deleting a worktree: also drop its projectile entry and kill its workspace.
+  (advice-add 'magit-worktree-delete :after #'dp-magit-worktree--cleanup-on-delete))
 
 ;; A guide for setting up forge:
 ;; https://gist.github.com/Azeirah/542f1db12e3ef904abfc7e9c2e83310e
