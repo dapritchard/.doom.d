@@ -323,8 +323,12 @@ This function is useful when added to the hook
 
 ;; .dir-locals.el --------------------------------------------------------------
 
-;; Worktrees live under ~/Worktrees, not ~/Dev, so trust their .dir-locals.el too.
-(add-to-list 'safe-local-variable-directories (expand-file-name "~/Worktrees"))
+;; `safe-local-variable-directories' is new in Emacs 30; on 29.x referencing it
+;; is a void-variable error that aborts the rest of this file, so guard it.
+(when (boundp 'safe-local-variable-directories)
+  (add-to-list 'safe-local-variable-directories (expand-file-name "~/Dev"))
+  ;; Worktrees live under ~/Worktrees, not ~/Dev, so trust their .dir-locals.el too.
+  (add-to-list 'safe-local-variable-directories (expand-file-name "~/Worktrees")))
 
 
 ;; multiple-cursors
