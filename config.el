@@ -1159,6 +1159,32 @@ first when it is the current workspace."
   )
 
 
+;; Like the built-in `r-lintr' checker, but runs lintr from the directory
+;; containing `.lintr', so project-level lintr configs are respected.
+;; Deferred with `after!' because `flycheck-define-checker' is autoloaded --
+;; calling it at top level would drag all of flycheck in at startup.
+(after! flycheck
+  (flycheck-define-checker r-lintr-project
+    "An R syntax and style checker using lintr with project support."
+    :command ("R" "--slave" "--no-restore" "--no-save" "-e"
+              (eval (concat "library(lintr);"
+                            "try(lint(commandArgs(TRUE)"
+                            ", cache=" (if flycheck-lintr-caching "TRUE" "FALSE")
+                            ", " flycheck-lintr-linters "))"))
+              "--args" source)
+    :working-directory (lambda (_checker)
+                         (or (locate-dominating-file default-directory ".lintr")
+                             default-directory))
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": style: " (message) line-end)
+     (error line-start (file-name) ":" line ":" column ": " (or "error" "warning") ": " (message) line-end))
+    :modes (ess-r-mode inferior-ess-r-mode))
+
+  ;; Replace the default checker
+  (setq-default flycheck-disabled-checkers '(r-lintr))
+  (add-to-list 'flycheck-checkers 'r-lintr-project))
+
+
 ;; Haskell ---------------------------------------------------------------------
 
 (general-def 'haskell-mode-map
